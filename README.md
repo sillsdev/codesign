@@ -11,4 +11,4 @@ There are a several actions that facilitate direct use of sign-digest.yml, remov
 4. `sillsdev/codesign/timestamp`: Given a correctly signed files attaches a timetamp, retying as necessary upto 10 times.
 5. `sillsdev/codesign/verify-signature`: A simple way to test if a file has a valid signature.
 
-Please see the test files [sign-example.yml](https://github.com/sillsdev/codesign/.github/workflows/sign-example.yml), and [actions-example.yml](https://github.com/sillsdev/codesign/.github/workflows/actions-example.yml), for examples of how to use these resources.
+Please see the test files [sign-example.yml](https://github.com/sillsdev/codesign/blob/main/.github/workflows/sign-example.yml), and [actions-example.yml](https://github.com/sillsdev/codesign/blob/main/.github/workflows/actions-example.yml), for examples of how to use these resources.

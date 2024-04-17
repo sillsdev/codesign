@@ -1,0 +1,39 @@
+name: SignTool time stamper
+description: Time stamp a signed file retrying as necessary.
+author: tim-seves
+inputs:
+  path:
+    description: Signed file to be time stamped
+    required: true
+  hash:
+    description: Time stamp digest hash algorithm
+    default: "sha256"
+    required: true
+  url:
+    description: Time Stamp Authority URL
+    required: true
+    default: http://timestamp.sectigo.com
+runs:
+  using: composite
+  steps:
+  - name: Timestamp signed file
+    env:
+      signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
+    shell: pwsh
+    run: |
+      $ErrorActionPreferenceBak = $ErrorActionPreference
+      $ErrorActionPreference    = 'Stop'
+      foreach ($attempt in 1..10) {
+        try{
+          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{inputs.hash}} /v ${{inputs.path}}
+          Write-Host "timestamp succeeded on try $attempt"              
+          break
+        } catch {
+          Write-Host "timestamp failed"
+          $Count = $Count - 1
+          Start-Sleep -Seconds 2 # wait for a seconds before next attempt.
+        } finally {
+          #Reset the erroracton preference
+          $ErrorActionPreference = $ErrorActionPreferenceBak
+        }
+      }

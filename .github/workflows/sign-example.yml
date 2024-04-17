@@ -1,0 +1,47 @@
+name: Demotstrate simple sign.yml workflow.
+on:
+  push:
+    paths:
+    - .github/workflows/sign.yml
+    - .github/workflows/sign-example.yml
+    - apply-signed-digest/**
+    - generate-digest/**
+    - timestamp/**
+    - verify-signature/**
+    branches:
+    - gha-runner-test
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - id: upload-exe
+      uses: actions/upload-artifact@v4
+      with:
+        name: grcompiler.exe
+        path: grcompiler.exe
+
+  sign:
+    needs: build
+    uses: sillsdev/codesign/.github/workflows/sign.yml@v1
+    with:
+      target: grcompiler.exe
+    secrets:
+      certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
+
+  test:
+    runs-on: windows-latest
+    needs: sign
+    env:
+      signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: grcompiler.exe
+
+    - name: Confirm signature
+      uses: sillsdev/codesign/verify-signature@v1
+      with:
+        path: grcompiler.exe

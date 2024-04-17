@@ -1,0 +1,45 @@
+name: SignTool detached digest generator
+description: Generate a digest and partially signed artifact for further processing by remotesign workflow and techops/apply-digest action
+author: tim-seves
+inputs:
+  path:
+    description: File to signed
+    required: true
+  hash:
+    description: Digest hash algorithm
+    default: "sha256"
+    required: true
+  url:
+    description: Description URL to include in the signed file.
+    default: "https://software.sil.org"
+  public-cert:
+    description: Secret containing the Base64 encoded public cert to sign against.
+    required: true
+outputs:
+    digest: 
+      description: The digest to be signed by the remotesign workflow
+      value: ${{ steps.digest.outputs.digest }}
+    artifact:
+      description: The artifact hold the partially signed file and auxilliary files, required by techops/apply-digest
+      value: ${{ steps.digest.outputs.artifact }}
+runs:
+  using: composite
+  steps:
+  - name: Generate digest and artifact
+    id: digest
+    env:
+      signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
+    shell: pwsh
+    run: |
+      $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
+      Set-Content -Path public.cer -Value ($PublicCert) -AsByteStream
+
+      ${{env.signtool}} sign /f public.cer /dg . /fd ${{ inputs.hash }} /du ${{ inputs.url }} /v ${{ inputs.path }}
+      Write-Output ("artifact=codesign-tmp-"+(Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
+      Write-Output ("digest="+(Get-Content ${{ inputs.path }}.dig)) >> $ENV:GITHUB_OUTPUT
+
+  - id: upload-working-dir
+    uses: actions/upload-artifact@v4
+    with:
+      name: ${{ steps.digest.outputs.artifact }}
+      path: ${{ inputs.path }}*

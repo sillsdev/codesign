@@ -1,0 +1,14 @@
+name: SignTool signature verifier
+description: Verify a file is signed and that signature is good.
+author: tim-seves
+inputs:
+  path:
+    description: Signed file to be checked
+    required: true
+runs:
+  using: composite
+  steps:
+  - shell: pwsh
+    env:
+      signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
+    run: ${{ env.signtool }} verify /pa /v ${{ inputs.path }}

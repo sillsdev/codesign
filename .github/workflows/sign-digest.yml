@@ -1,0 +1,38 @@
+name: Sign digest
+on:
+  workflow_call:
+    inputs:
+      profile:
+        default: "LsDevSectigoEV"
+        type: string
+      hash:
+        default: "sha256"
+        type: string
+      target:
+        required: true
+        type: string
+      digest:
+        required: true
+        type: string
+    outputs:
+      signed-digest:
+        description: "Signature for the supplied digest"
+        value: ${{ jobs.sign-digest.outputs.digest }}
+
+env:
+ SSH: ssh -T -o StrictHostKeyChecking=no signer@support.psonet
+ 
+jobs:
+  sign-digest:
+    runs-on: [self-hosted, ltops-signing]
+    outputs:
+      digest: ${{ steps.read-digest.outputs.digest }}
+    steps:
+    - id: write-digest
+      run: echo "${{inputs.digest}}" | $SSH tee ${{inputs.target}}.dig
+   
+    - id: sign-digest
+      run: $SSH sign-digest ${{inputs.profile}} ${{inputs.hash}} ${{inputs.target}}
+
+    - id: read-digest
+      run: echo "digest=$($SSH cat ${{inputs.target}}.dig.signed)" >> "$GITHUB_OUTPUT"

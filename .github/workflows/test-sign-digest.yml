@@ -9,7 +9,7 @@ env:
 
 jobs:
   sign:
-    uses: .github/workflows/sign-digest.yml
+    uses: .github/workflows/sign-digest.yml@v1
     with:
       target: ssh-test-setup.exe
       digest: "egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ="

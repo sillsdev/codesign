@@ -44,7 +44,6 @@ jobs:
     needs: digest
     uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
     with:
-      target: ${{inputs.target}}
       digest: ${{needs.digest.outputs.digest}}
    
   finalise:

@@ -3,7 +3,7 @@ description: Generate a digest and partially signed artifact for further process
 author: tim-seves
 inputs:
   path:
-    description: File to signed
+    description: File to sign
     required: true
   hash:
     description: Digest hash algorithm

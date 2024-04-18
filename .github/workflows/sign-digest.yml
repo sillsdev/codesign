@@ -28,11 +28,4 @@ jobs:
     outputs:
       digest: ${{ steps.read-digest.outputs.digest }}
     steps:
-    - id: write-digest
-      run: echo "${{inputs.digest}}" | $SSH tee ${{inputs.target}}.dig
-   
-    - id: sign-digest
-      run: $SSH sign-digest ${{inputs.profile}} ${{inputs.hash}} ${{inputs.target}}
-
-    - id: read-digest
-      run: echo "digest=$($SSH cat ${{inputs.target}}.dig.signed)" >> "$GITHUB_OUTPUT"
+    - run: echo "digest=$(sign-digest ${{inputs.profile}} ${{inputs.hash}} '${{inputs.digest}}')" >> "$GITHUB_OUTPUT"

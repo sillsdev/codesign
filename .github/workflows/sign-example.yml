@@ -1,4 +1,4 @@
-name: Demotstrate simple sign.yml workflow.
+name: Demonstrate simple sign.yml workflow.
 on:
   push:
     paths:

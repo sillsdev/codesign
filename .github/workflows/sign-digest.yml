@@ -8,9 +8,6 @@ on:
       hash:
         default: "sha256"
         type: string
-      target:
-        required: true
-        type: string
       digest:
         required: true
         type: string

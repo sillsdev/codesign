@@ -9,7 +9,7 @@ env:
 
 jobs:
   sign:
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@chore/hide-details-in-script
     with:
       target: ssh-test-setup.exe
       digest: "egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ="

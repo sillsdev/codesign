@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     outputs:
-      job1: ${{ steps.generate.outputs }}
+      job1: ${{ fromJSON(steps.generate.outputs) }}
     steps:
     - uses: actions/checkout@v4
     
@@ -31,7 +31,7 @@ jobs:
     needs: build
     uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
     with:
-      job: ${{needs.build.outputs.job1 }}
+      job: ${{ needs.build.outputs.job1 }}
   
   attach:
     needs: remotesign

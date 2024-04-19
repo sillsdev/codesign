@@ -11,13 +11,15 @@ jobs:
   sign:
     uses: ./.github/workflows/sign-digest.yml
     with:
-      digest: "egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ="
+      job: '{"id":null, "algorithm":"sha256", "digest":"egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ="}'
 
   check:
     runs-on: ubuntu-latest
     needs: sign
+    env:
+      signed: ${{ fromJSON(needs.sign.outputs) }}
     steps:
     - run: |
-        echo "Result: ${{ needs.sign.outputs.signed-digest }}" >> $GITHUB_STEP_SUMMARY
+        echo "Result: ${{ env.signed.signed-digest }}" >> $GITHUB_STEP_SUMMARY
         echo "Expected: $SIGNED_DIGEST" >> $GITHUB_STEP_SUMMARY
-        test "${{ needs.sign.outputs.signed-digest }}" = "$SIGNED_DIGEST"
+        test "${{ env.signed.signed-digest }}" = "$SIGNED_DIGEST"

@@ -11,14 +11,14 @@ on:
     outputs:
       signed-job:
         description: "Signature for the supplied digest"
-        value: ${{ jobs.sign-digest.outputs }}
+        value: ${{ toJSON(jobs.sign-digest.outputs) }}
 env:
   job: ${{ fromJson(inputs.job) }}
 jobs:
   sign-digest:
     runs-on: [self-hosted, ltops-signing]
     outputs:
-      digest: ${{ steps.sign.outputs.digest }}
+      digest: ${{ steps.sign.outputs }}
     steps:
     - id: sign
       run: |

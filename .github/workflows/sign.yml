@@ -32,7 +32,7 @@ jobs:
         name: ${{ inputs.target }}
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@fix/combine-partialy-signed-variables
+      uses: sillsdev/codesign/generate-digest@v1
       with:
         path: ${{ inputs.target }}
         hash: ${{ inputs.hash }}
@@ -41,7 +41,7 @@ jobs:
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
     with:
       job: ${{ needs.digest.outputs.job }}
    
@@ -49,12 +49,12 @@ jobs:
     needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
+    - uses: sillsdev/codesign/apply-signed-digest@v1
       with:
         job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@fix/combine-partialy-signed-variables
+      uses:  sillsdev/codesign/timestamp@v1
       with:
         job: ${{ needs.remotesign.outputs.signed-job }}
     

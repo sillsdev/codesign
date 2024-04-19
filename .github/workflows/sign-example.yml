@@ -23,7 +23,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign.yml@fix/combine-partialy-signed-variables
+    uses: sillsdev/codesign/.github/workflows/sign.yml@v1
     with:
       target: grcompiler.exe
     secrets:

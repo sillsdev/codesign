@@ -13,7 +13,7 @@ on:
         description: "Signature for the supplied digest"
         value: ${{ toJSON(jobs.sign-digest.outputs) }}
 env:
-  job: ${{ fromJson(inputs.job) }}
+  job: ${{ fromJSON(inputs.job) }}
 jobs:
   sign-digest:
     runs-on: [self-hosted, ltops-signing]

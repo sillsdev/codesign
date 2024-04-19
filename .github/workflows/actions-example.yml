@@ -13,8 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     outputs:
-      digest: ${{ steps.generate.outputs.digest }}
-      intermediates: ${{ steps.generate.outputs.artifact }}
+      job1: ${{ steps.generate.outputs.job }}
     steps:
     - uses: actions/checkout@v4
     
@@ -22,37 +21,37 @@ jobs:
     # you can build multiple deliverables here and call generate-digest many times,
     # provided you store each invocation's artifact and digest pair separately.
 
-    - id: generate
+    - name: Generate job from file and certificate.
+      id: generate
       uses: sillsdev/codesign/generate-digest@v1
       with:
         path: grcompiler.exe
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
-  remotesign:
+  sign:
     needs: build
     uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
     with:
-      digest: ${{needs.build.outputs.digest}}
+      job: ${{ needs.build.outputs.job1 }}
   
   attach:
-    needs: [build, remotesign]
+    needs: sign
     runs-on: windows-latest
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
-    - uses: sillsdev/codesign/apply-signed-digest@v1
+    - name: Apply signatures to file in job
+      uses: sillsdev/codesign/apply-signed-digest@v1
       with:
-        artifact: ${{ needs.build.outputs.intermediates }}
-        path: grcompiler.exe
-        signed-digest: ${{ needs.remotesign.outputs.signed-digest }}
+        job: ${{ needs.sign.outputs.signed-job }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
-    - id: timestamp
+    - name: Timestamp file in job
       uses:  sillsdev/codesign/timestamp@v1
       with:
-        path: grcompiler.exe
+        job: ${{ needs.sign.outputs.signed-job }}
 
     - name: Confirm signature
       uses: sillsdev/codesign/verify-signature@v1
       with:
-        path: grcompiler.exe
+        path:  ${{ fromJson(needs.sign.outputs.signed-job).path }}

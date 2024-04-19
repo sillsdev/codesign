@@ -43,7 +43,7 @@ jobs:
     needs: digest
     uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
     with:
-      digest: ${{ needs.digest.outputs.job }}
+      job: ${{ needs.digest.outputs.job }}
    
   finalise:
     needs: remotesign

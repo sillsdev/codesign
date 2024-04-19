@@ -34,7 +34,7 @@ runs:
       ${{env.signtool}} sign /f public.cer /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}
       Write-Output ("id=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
       Write-Output ("digest=" + (Get-Content ${{ inputs.path }}.dig)) >> $ENV:GITHUB_OUTPUT
-      Write-Output ("path=" + ${{ inputs.path }}) >> $ENV:GITHUB_OUTPUT
+      Write-Output ("path=${{ inputs.path }}") >> $ENV:GITHUB_OUTPUT
       Write-Output ("algorithm=${{ inputs.algorithm }}") >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir

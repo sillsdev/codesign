@@ -10,10 +10,10 @@ runs:
   steps:
   - uses: actions/download-artifact@v4
     with:
-      name: codesign-job-${{ fomrJSON(inputs.job).id }}
+      name: codesign-job-${{ fromJSON(inputs.job).id }}
   - uses: geekyeggo/delete-artifact@v5
     with:
-      name: codesign-job-${{ fomrJSON(inputs.job).id }}
+      name: codesign-job-${{ fromJSON(inputs.job).id }}
   
   - id: apply-signed-digest
     shell: pwsh

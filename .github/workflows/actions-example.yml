@@ -21,7 +21,8 @@ jobs:
     # you can build multiple deliverables here and call generate-digest many times,
     # provided you store each invocation's artifact and digest pair separately.
 
-    - id: generate
+    - name: Generate job from file and certificate.
+      id: generate
       uses: sillsdev/codesign/generate-digest@fix/combine-partialy-signed-variables
       with:
         path: grcompiler.exe
@@ -39,12 +40,13 @@ jobs:
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
-    - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
+    - name: Apply signatures to file in job
+      uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
       with:
         job: ${{ needs.sign.outputs.signed-job }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
-    - id: timestamp
+    - name: Timestamp file in job
       uses:  sillsdev/codesign/timestamp@fix/combine-partialy-signed-variables
       with:
         job: ${{ needs.sign.outputs.signed-job }}

@@ -41,7 +41,7 @@ jobs:
     # provided you reference each invocation's artifact and digest pair separately.
     - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
       with:
-        job: ${{ needs.remotesign.outputs }}
+        job: ${{ needs.remotesign.outputs.signed-job }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
     - id: timestamp

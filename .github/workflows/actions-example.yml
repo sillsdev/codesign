@@ -34,7 +34,7 @@ jobs:
       job: ${{ needs.build.outputs.job1 }}
   
   attach:
-    needs: remotesign
+    needs: sign
     runs-on: windows-latest
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,

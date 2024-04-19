@@ -2,12 +2,8 @@ name: SignTool time stamper
 description: Time stamp a signed file retrying as necessary.
 author: tim-seves
 inputs:
-  path:
+  job:
     description: Signed file to be time stamped
-    required: true
-  hash:
-    description: Time stamp digest hash algorithm
-    default: "sha256"
     required: true
   url:
     description: Time Stamp Authority URL
@@ -19,13 +15,15 @@ runs:
   - name: Timestamp signed file
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
+      path: ${{ fromJSON(inputs.job).path }}
+      algorithm: ${{ fromJSON(inputs.job).algoritm }}
     shell: pwsh
     run: |
       $ErrorActionPreferenceBak = $ErrorActionPreference
       $ErrorActionPreference    = 'Stop'
       foreach ($attempt in 1..10) {
         try{
-          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{inputs.hash}} /v ${{inputs.path}}
+          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{env.algorithm}} /v ${{env.path}}
           Write-Host "timestamp succeeded on try $attempt"              
           break
         } catch {

@@ -47,9 +47,9 @@ jobs:
     - id: timestamp
       uses:  sillsdev/codesign/timestamp@fix/combine-partialy-signed-variables
       with:
-        path: grcompiler.exe
+        path: ${{ needs.sign.outputs.signed-job }}
 
     - name: Confirm signature
       uses: sillsdev/codesign/verify-signature@fix/combine-partialy-signed-variables
       with:
-        path: grcompiler.exe
+        path:  ${{ fromJson(needs.sign.outputs.signed-job).path }}

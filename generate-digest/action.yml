@@ -40,5 +40,5 @@ runs:
   - id: upload-working-dir
     uses: actions/upload-artifact@v4
     with:
-      name: codesign-job-${{ steps.digest.outputs.artifact }}
+      name: codesign-job-${{ steps.digest.outputs.id }}
       path: ${{ inputs.path }}*

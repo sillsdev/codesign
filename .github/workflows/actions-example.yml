@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     outputs:
-      job1: ${{ fromJSON(steps.generate.outputs) }}
+      job1: ${{ steps.generate.outputs.job }}
     steps:
     - uses: actions/checkout@v4
     
@@ -22,14 +22,14 @@ jobs:
     # provided you store each invocation's artifact and digest pair separately.
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@fix/combine-partialy-signed-variables
+      uses: sillsdev/codesign/generate-digest@HEAD
       with:
         path: grcompiler.exe
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   remotesign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@HEAD
     with:
       job: ${{ needs.build.outputs.job1 }}
   
@@ -39,7 +39,7 @@ jobs:
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
-    - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
+    - uses: sillsdev/codesign/apply-signed-digest@HEAD
       with:
         job: ${{ needs.remotesign.outputs }}
 

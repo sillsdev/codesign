@@ -22,14 +22,14 @@ jobs:
     # provided you store each invocation's artifact and digest pair separately.
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@HEAD
+      uses: sillsdev/codesign/generate-digest@fix/combine-partialy-signed-variables
       with:
         path: grcompiler.exe
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   remotesign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@HEAD
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
     with:
       job: ${{ needs.build.outputs.job1 }}
   
@@ -39,17 +39,17 @@ jobs:
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
-    - uses: sillsdev/codesign/apply-signed-digest@HEAD
+    - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
       with:
         job: ${{ needs.remotesign.outputs }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@v1
+      uses:  sillsdev/codesign/timestamp@fix/combine-partialy-signed-variables
       with:
         path: grcompiler.exe
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v1
+      uses: sillsdev/codesign/verify-signature@fix/combine-partialy-signed-variables
       with:
         path: grcompiler.exe

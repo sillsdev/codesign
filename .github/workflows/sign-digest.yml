@@ -2,20 +2,18 @@ name: Sign digest
 on:
   workflow_call:
     inputs:
-      profile:
+      provider:
         default: "LsDevSectigoEV"
         type: string
-      hash:
-        default: "sha256"
-        type: string
-      digest:
+      job:
         required: true
         type: string
     outputs:
-      signed-digest:
+      signed-job:
         description: "Signature for the supplied digest"
-        value: ${{ jobs.sign-digest.outputs.digest }}
-
+        value: ${{ jobs.sign-digest.outputs }}
+env:
+  job: ${{ fromJson(inputs.job) }}
 jobs:
   sign-digest:
     runs-on: [self-hosted, ltops-signing]
@@ -23,4 +21,9 @@ jobs:
       digest: ${{ steps.sign.outputs.digest }}
     steps:
     - id: sign
-      run: echo "digest=$(sign-digest ${{inputs.profile}} ${{inputs.hash}} '${{inputs.digest}}')" >> "$GITHUB_OUTPUT"
+      run: |
+        signed_digest=$(sign-digest ${{inputs.provider}} ${{env.job.algorithm}} '${{env.job.digest}}')
+        echo "id=${{ env.job.id }}" >> "$GITHUB_OUTPUT"
+        echo "algorithm=${{ env.job.algorithm }}" >> "$GITHUB_OUTPUT"
+        echo "path=${{ env.job.path }}"
+        echo "signed-digest=$signed_digest" >> "$GITHUB_OUTPUT"

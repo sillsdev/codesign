@@ -5,7 +5,7 @@ inputs:
   path:
     description: File to sign
     required: true
-  hash:
+  algorithm:
     description: Digest hash algorithm
     default: "sha256"
     required: true
@@ -16,12 +16,9 @@ inputs:
     description: Secret containing the Base64 encoded public cert to sign against.
     required: true
 outputs:
-    digest: 
-      description: The digest to be signed by the remotesign workflow
-      value: ${{ steps.digest.outputs.digest }}
-    artifact:
-      description: The artifact hold the partially signed file and auxilliary files, required by techops/apply-digest
-      value: ${{ steps.digest.outputs.artifact }}
+    job: 
+      description: The job describing the file and parameters to be processed by the sign-digest workflow.
+      value: ${{ steps.digest.outputs }}
 runs:
   using: composite
   steps:
@@ -34,12 +31,14 @@ runs:
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
       Set-Content -Path public.cer -Value ($PublicCert) -AsByteStream
 
-      ${{env.signtool}} sign /f public.cer /dg . /fd ${{ inputs.hash }} /du ${{ inputs.url }} /v ${{ inputs.path }}
-      Write-Output ("artifact=codesign-tmp-"+(Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
-      Write-Output ("digest="+(Get-Content ${{ inputs.path }}.dig)) >> $ENV:GITHUB_OUTPUT
+      ${{env.signtool}} sign /f public.cer /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}
+      Write-Output ("id=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
+      Write-Output ("digest=" + (Get-Content ${{ inputs.path }}.dig)) >> $ENV:GITHUB_OUTPUT
+      Write-Output ("path=" + ${{ inputs.path }}) >> $ENV:GITHUB_OUTPUT
+      Write-Output ("algorithm=${{ inputs.algorithm }}") >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir
     uses: actions/upload-artifact@v4
     with:
-      name: ${{ steps.digest.outputs.artifact }}
+      name: codesign-job-${{ steps.digest.outputs.artifact }}
       path: ${{ inputs.path }}*

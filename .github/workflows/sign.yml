@@ -25,15 +25,14 @@ jobs:
   digest:
     runs-on: windows-latest
     outputs:
-      digest: ${{ steps.generate.outputs.digest }}
-      intermediates: ${{ steps.generate.outputs.artifact }}
+      job: ${{ steps.generate.outputs.job }}
     steps:
     - uses: actions/download-artifact@v4
       with:
-        name: ${{inputs.target}}
+        name: ${{ inputs.target }}
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@v1
+      uses: sillsdev/codesign/generate-digest@fix/combine-partialy-signed-variables
       with:
         path: ${{ inputs.target }}
         hash: ${{ inputs.hash }}
@@ -42,24 +41,22 @@ jobs:
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/combine-partialy-signed-variables
     with:
-      digest: ${{needs.digest.outputs.digest}}
+      digest: ${{ needs.digest.outputs.job }}
    
   finalise:
-    needs: [digest, remotesign]
+    needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@v1
+    - uses: sillsdev/codesign/apply-signed-digest@fix/combine-partialy-signed-variables
       with:
-        artifact: ${{ needs.digest.outputs.intermediates }}
-        path: ${{ inputs.target }}
-        signed-digest: ${{ needs.remotesign.outputs.signed-digest }}
+        job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@v1
+      uses:  sillsdev/codesign/timestamp@fix/combine-partialy-signed-variables
       with:
-        path: ${{inputs.target}}
+        job: ${{ needs.remotesign.outputs.signed-job }}
     
     - id: upload
       uses: actions/upload-artifact@v4

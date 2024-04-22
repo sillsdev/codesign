@@ -13,14 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo sha256 >.algorithm
-          echo "$DIGEST" > test.dig
+          mkdir .digest
+          echo sha256 >.digest/.algorithm
+          echo "$DIGEST" >.digest/test.dig
       - uses: actions/upload-artifact@v4
         with:
           name: codesign-job-a-test
-          path: |
-            .algorithm
-            test.dig
+          path: .digest
   
   sign:
     needs: setup

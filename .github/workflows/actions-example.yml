@@ -16,8 +16,11 @@ jobs:
       job1: ${{ steps.generate.outputs.job }}
     steps:
     - uses: actions/checkout@v4
-    
+
     # build your exe, dll or msi here
+    - run: |
+        Copy-Item -Path * -Include *.exe -Destination targets
+        
     # you can build multiple deliverables here and call generate-digest many times,
     # provided you store each invocation's artifact and digest pair separately.
 
@@ -25,7 +28,7 @@ jobs:
       id: generate
       uses: sillsdev/codesign/generate-digest@feature/multifile-globing
       with:
-        path: grcompiler.exe
+        path: targets
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   sign:

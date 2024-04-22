@@ -15,15 +15,15 @@ runs:
   - id: timestamp
     shell: pwsh
     env:
-      algorithm: ${{ fromJSON(inputs.job).algorithm }}
-      path: ${{ fromJSON(inputs.job).path }}
+      path: job-${{ inputs.job }}
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
       $ErrorActionPreferenceBak = $ErrorActionPreference
       $ErrorActionPreference    = 'Stop'
+      $Algorithm = (Get-Content -Path ${{ emv.path }}/.algorithm)
       foreach ($attempt in 1..10) {
         try{
-          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{env.algorithm}} /v ${{env.path}}
+          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td $Algorithm /v ${{env.path}}
           Write-Host "timestamp succeeded on try $attempt"              
           break
         } catch {

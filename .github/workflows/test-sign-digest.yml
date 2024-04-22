@@ -23,6 +23,7 @@ jobs:
             test.dig
   
   sign:
+    needs: setup
     uses: ./.github/workflows/sign-digest.yml
     with:
       job: sign-digest-test-job

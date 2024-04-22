@@ -33,7 +33,7 @@ jobs:
         path: targets-${{ inputs.target }}
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@next
+      uses: sillsdev/codesign/generate-digest@feature/multifile-globing
       with:
         path: targets-${{ inputs.target }}/*
         hash: ${{ inputs.hash }}
@@ -42,7 +42,7 @@ jobs:
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@next
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@feature/multifile-globing
     with:
       job: ${{ needs.digest.outputs.job }}
    
@@ -50,12 +50,12 @@ jobs:
     needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@next
+    - uses: sillsdev/codesign/apply-signed-digest@feature/multifile-globing
       with:
         job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@next
+      uses:  sillsdev/codesign/timestamp@feature/multifile-globing
       with:
         job: ${{ needs.remotesign.outputs.signed-job }}
     

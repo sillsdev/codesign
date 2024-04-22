@@ -21,15 +21,16 @@ runs:
   
   - id: apply-signed-digest
     shell: pwsh
+    working-directory: job-${{ inputs.job }}
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
-      ${{env.signtool}} sign /di . /v job-${{ inputs.job }}
+      ${{env.signtool}} sign /di .digests /v *
   
   - id: clean-up
     shell: pwsh
     run: |
-      Copy-Item -Path job-${{ inputs.job }} -Exclude *.dig,*dig.signed,.certificate,.algorithm -Destination ${{ input.path }}
+      Copy-Item -Path job-${{ inputs.job }} -Destination ${{ input.path }}
       dir ${{ input.path }}
       dir job-${{ inputs.job }}
       Remove-Item job-${{ inputs.job }} -Recurse

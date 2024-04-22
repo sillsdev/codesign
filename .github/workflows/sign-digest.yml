@@ -28,10 +28,9 @@ jobs:
         path: ${{ env.path }}
   
     - id: sign
+      working-directory: ${{ env.path }}/.digests
       run: |
-        cd ${{ env.path }}
-        ls -l
-        algorithm=$(cat .algorithm)
+        algorithm=$(cat algorithm)
         for dig in $(ls *.dig)
         do
           sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed

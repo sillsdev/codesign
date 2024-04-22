@@ -27,13 +27,15 @@ runs:
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     shell: pwsh
+    working-directory: ${{ inputs.path }}
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      Set-Content -Path ${{ inputs.path }}\.certificate -Value ($PublicCert) -AsByteStream
-      Set-Content -Path ${{ inputs.path }}\.algorithm -Value '${{ inputs.algorithm }}'
+      New-Item -Path . -Name digests -ItemType "directory"
+      Set-Content .digests/certificate -Value ($PublicCert) -AsByteStream
+      Set-Content .digests/algorithm -Value '${{ inputs.algorithm }}'
 
-      ${{env.signtool}} sign /f .certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}/*
-      Write-Output ("job=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
+      ${{env.signtool}} sign /f .certificate /dg .digests /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v *
+      Write-Output ("job=" + (Get-FileHash . -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir
     uses: actions/upload-artifact@v4

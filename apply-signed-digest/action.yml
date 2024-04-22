@@ -35,7 +35,7 @@ runs:
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
-      Copy-Item -Path job-${{ env.id }} -Destination ${{ input.path }}
-      dir ${{ input.path }}
+      Copy-Item -Path job-${{ env.id }} -Destination ${{ inputs.path }}
+      dir ${{ inputs.path }}
       dir job-${{ env.id }}
       Remove-Item job-${{ env.id }} -Recurse

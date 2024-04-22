@@ -10,8 +10,9 @@ on:
         required: true
         type: string
 env:
-  artifact: codesign-job-${{ toJSON(inputs.job).id }}
-  path: job-${{ toJSON(inputs.job).id }}
+  algorithm: ${{ fromJSON(inputs.job).algorithm }}
+  artifact: codesign-job-${{ fromJSON(inputs.job).id }}
+  path: job-${{ fromJSON(inputs.job).id }}
 jobs:
   sign-digest:
     runs-on: [self-hosted, ltops-signing]
@@ -23,8 +24,6 @@ jobs:
   
     - id: sign
       working-directory: ${{ env.path }}
-      env:
-        algorithm: ${{ toJSON(inputs.job).algorithm }}
       run: |
         for dig in $(ls *.dig)
         do

@@ -12,9 +12,11 @@ runs:
   using: composite
   steps:
   - uses: actions/download-artifact@v4
+    env:
+      id: ${{ fromJSON(inputs.job).id }}
     with:
-      name: codesign-job-${{ fromJSON(inputs.job).id }}
-      path: job-${{ fromJSON(inputs.job).id }}
+      name: codesign-job-${{ env.id }}
+      path: job-${{ env.id }}
   - uses: geekyeggo/delete-artifact@v5
     with:
       name: codesign-job-${{ fromJSON(inputs.job).id }}
@@ -29,8 +31,10 @@ runs:
   
   - id: clean-up
     shell: pwsh
+    env:
+      id: ${{ fromJSON(inputs.job).id }}
     run: |
-      Copy-Item -Path job-${{ fromJSON(inputs.job).id }} -Destination ${{ input.path }}
+      Copy-Item -Path job-${{ env.id }} -Destination ${{ input.path }}
       dir ${{ input.path }}
-      dir job-${{ fromJSON(inputs.job).id }}
-      Remove-Item job-${{ fromJSON(inputs.job).id }} -Recurse
+      dir job-${{ env.id }}
+      Remove-Item job-${{ env.id }} -Recurse

@@ -3,7 +3,7 @@ description: Generate a digest and partially signed artifact for further process
 author: tim-seves
 inputs:
   path:
-    description: File to sign
+    description: Directory containing files to sign
     required: true
   algorithm:
     description: Digest hash algorithm
@@ -18,7 +18,7 @@ inputs:
 outputs:
     job: 
       description: The job describing the file and parameters to be processed by the sign-digest workflow.
-      value: ${{ toJSON(steps.digest.outputs) }}
+      value: ${{ steps.digest.outputs.job }}
 runs:
   using: composite
   steps:
@@ -29,16 +29,14 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      Set-Content -Path public.cer -Value ($PublicCert) -AsByteStream
+      Set-Content -Path .certificate -Value ($PublicCert) -AsByteStream
+      Set-Content -Path .algorithm -Value '${{ inputs.algorithm }}'
 
-      ${{env.signtool}} sign /f public.cer /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}
-      Write-Output ("id=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
-      Write-Output ("digest=" + (Get-Content ${{ inputs.path }}.dig)) >> $ENV:GITHUB_OUTPUT
-      Write-Output ("path=${{ inputs.path }}") >> $ENV:GITHUB_OUTPUT
-      Write-Output ("algorithm=${{ inputs.algorithm }}") >> $ENV:GITHUB_OUTPUT
+      ${{env.signtool}} sign /f .certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}
+      Write-Output ("job=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir
     uses: actions/upload-artifact@v4
     with:
-      name: codesign-job-${{ steps.digest.outputs.id }}
+      name: codesign-job-${{ steps.digest.outputs.job }}
       path: ${{ inputs.path }}

@@ -13,21 +13,30 @@ on:
       signed-job:
         description: "Signature for the supplied digest"
         value: ${{ jobs.sign-digest.outputs.job }}
-env:
-  algorithm: ${{ fromJSON(inputs.job).algorithm }}
-  digest: ${{ fromJSON(inputs.job).digest }}
-  id: ${{ fromJSON(inputs.job).id }}
-  path: ${{ fromJSON(inputs.job).path }}
 jobs:
   sign-digest:
     runs-on: [self-hosted, ltops-signing]
     outputs:
-      job: ${{ toJson(steps.sign.outputs) }}
+      job: ${{ inputs.job }}
+    env:
+      artifact: codesign-job-${{ inputs.job }}
+      path: job-${{ inputs.job }}
     steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.artifact }}
+        path: ${{ env.path }}
+  
     - id: sign
       run: |
-        signed_digest=$(sign-digest ${{inputs.provider}} ${{env.algorithm}} '${{env.digest}}')
-        echo "id=${{ env.id }}" >> "$GITHUB_OUTPUT"
-        echo "algorithm=${{ env.algorithm }}" >> "$GITHUB_OUTPUT"
-        echo "path=${{ env.path }}" >> "$GITHUB_OUTPUT"
-        echo "signed-digest=$signed_digest" >> "$GITHUB_OUTPUT"
+        cd ${{ env.path }}
+        algorithm=$(cat .algorithm)
+        for dig in $(ls *.dig)
+        do
+          sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed)
+        done  
+        
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.artifact }}
+        path: ${{ env.path }}

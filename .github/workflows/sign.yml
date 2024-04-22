@@ -52,12 +52,13 @@ jobs:
     steps:
     - uses: sillsdev/codesign/apply-signed-digest@feature/multifile-globing
       with:
+        path: targets-${{ inputs.artifact }}
         job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
       uses:  sillsdev/codesign/timestamp@feature/multifile-globing
       with:
-        path: targets-${{ inputs.artifact }}
+        path: targets-${{ inputs.artifact }}/*
         job: ${{ needs.remotesign.outputs.signed-job }}
     
     - id: upload

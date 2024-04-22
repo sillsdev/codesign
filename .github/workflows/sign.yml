@@ -5,7 +5,7 @@ on:
       profile:
         default: "LsDevSectigoEV"
         type: string
-      hash:
+      algorithm:
         default: "sha256"
         type: string
       url:
@@ -36,7 +36,7 @@ jobs:
       uses: sillsdev/codesign/generate-digest@feature/multifile-globing
       with:
         path: targets-${{ inputs.artifact }}/*
-        algorithm: ${{ inputs.hash }}
+        algorithm: ${{ inputs.algorithm }}
         url: ${{ inputs.url }}
         public-cert: ${{ secrets.certificate }}
 
@@ -57,6 +57,7 @@ jobs:
     - id: timestamp
       uses:  sillsdev/codesign/timestamp@feature/multifile-globing
       with:
+        path: targets-${{ inputs.artifact }}
         job: ${{ needs.remotesign.outputs.signed-job }}
     
     - id: upload

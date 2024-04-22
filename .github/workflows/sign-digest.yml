@@ -34,8 +34,7 @@ jobs:
         algorithm=$(cat .algorithm)
         for dig in $(ls *.dig)
         do
-          echo with $algorithm, for digest: $dig = $(cat $dig)
-          echo sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed
+          sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed
         done  
         
     - uses: actions/upload-artifact@v4

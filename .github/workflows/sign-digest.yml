@@ -33,10 +33,13 @@ jobs:
         algorithm=$(cat .algorithm)
         for dig in $(ls *.dig)
         do
-          sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed)
+          sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed
         done  
         
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ env.artifact }}
         path: ${{ env.path }}
+
+    - id: clean-up
+      run: rm rf ${{ env.path }}

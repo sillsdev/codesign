@@ -23,14 +23,14 @@ jobs:
 
     - name: Generate job from file and certificate.
       id: generate
-      uses: sillsdev/codesign/generate-digest@v1
+      uses: sillsdev/codesign/generate-digest@next
       with:
         path: grcompiler.exe
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@next
     with:
       job: ${{ needs.build.outputs.job1 }}
   
@@ -41,17 +41,17 @@ jobs:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
     - name: Apply signatures to file in job
-      uses: sillsdev/codesign/apply-signed-digest@v1
+      uses: sillsdev/codesign/apply-signed-digest@next
       with:
         job: ${{ needs.sign.outputs.signed-job }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
     - name: Timestamp file in job
-      uses:  sillsdev/codesign/timestamp@v1
+      uses:  sillsdev/codesign/timestamp@next
       with:
         job: ${{ needs.sign.outputs.signed-job }}
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v1
+      uses: sillsdev/codesign/verify-signature@next
       with:
         path:  ${{ fromJson(needs.sign.outputs.signed-job).path }}

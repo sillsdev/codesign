@@ -17,7 +17,7 @@ jobs:
           echo "$DIGEST" > test.dig
       - uses: actions/upload-artifact@v4
         with:
-          name: sign-digest-test-job
+          name: codesign-job-a-test
           path: |
             .algorithm
             test.dig
@@ -26,7 +26,7 @@ jobs:
     needs: setup
     uses: ./.github/workflows/sign-digest.yml
     with:
-      job: sign-digest-test-job
+      job: a-test
 
   check:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-        name: sign-digest-test-job
+        name: codesign-job-a-test
     - run: |
         echo "Result: $(cat test.dig.signed)" >> $GITHUB_STEP_SUMMARY
         echo "Expected: $SIGNED_DIGEST" >> $GITHUB_STEP_SUMMARY

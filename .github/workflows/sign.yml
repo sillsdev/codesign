@@ -36,7 +36,7 @@ jobs:
       uses: sillsdev/codesign/generate-digest@feature/multifile-globing
       with:
         path: targets-${{ inputs.artifact }}/*
-        hash: ${{ inputs.hash }}
+        algorithm: ${{ inputs.hash }}
         url: ${{ inputs.url }}
         public-cert: ${{ secrets.certificate }}
 

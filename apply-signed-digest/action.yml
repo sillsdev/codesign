@@ -41,6 +41,8 @@ runs:
 
   - name: Clean up
     shell: pwsh
+    env:
+      id: ${{ fromJSON(inputs.job).id }}
     run: |
       echo ---------
       dir ${{ inputs.path }}

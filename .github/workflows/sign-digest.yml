@@ -30,6 +30,7 @@ jobs:
     - id: sign
       run: |
         cd ${{ env.path }}
+        ls -l
         algorithm=$(cat .algorithm)
         for dig in $(ls *.dig)
         do
@@ -45,4 +46,4 @@ jobs:
         overwrite: true
 
     - id: clean-up
-      run: rm rf ${{ env.path }}
+      run: rm -rf ${{ env.path }}

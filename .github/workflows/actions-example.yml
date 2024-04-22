@@ -25,7 +25,7 @@ jobs:
       id: generate
       uses: sillsdev/codesign/generate-digest@feature/multifile-globing
       with:
-        path: *.exe
+        path: '*.exe'
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   sign:
@@ -49,9 +49,9 @@ jobs:
     - name: Timestamp file in job
       uses:  sillsdev/codesign/timestamp@feature/multifile-globing
       with:
-        path: *.exe
+        path: '*.exe'
 
     - name: Confirm signature
       uses: sillsdev/codesign/verify-signature@feature/multifile-globing
       with:
-        path:  *.exe
+        path:  '*.exe'

@@ -30,9 +30,9 @@ runs:
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
       $Targets = '${{ inputs.path }}'.Split("`n") -join ' '
-      Set-Content /tmp/certificate -Value ($PublicCert) -AsByteStream
+      Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
-      ${{env.signtool}} sign /f /tmp/certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
+      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
       Write-Output ("id=" + (Get-FileHash . -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
       Write-Output ('algorithm=${{ inputs.algorithm }}') >> $ENV:GITHUB_OUTPUT
       Write-Output ('targets=$Targets') >> $ENV:GITHUB_OUTPUT

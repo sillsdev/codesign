@@ -29,10 +29,10 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      Set-Content -Path .certificate -Value ($PublicCert) -AsByteStream
-      Set-Content -Path .algorithm -Value '${{ inputs.algorithm }}'
+      Set-Content -Path ${{ inputs.path }}/.certificate -Value ($PublicCert) -AsByteStream
+      Set-Content -Path ${{ inputs.path }}/.algorithm -Value '${{ inputs.algorithm }}'
 
-      ${{env.signtool}} sign /f .certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}
+      ${{env.signtool}} sign /f .certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ${{ inputs.path }}/*
       Write-Output ("job=" + (Get-FileHash ${{ inputs.path }} -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir

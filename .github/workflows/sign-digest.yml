@@ -33,7 +33,7 @@ jobs:
         algorithm=$(cat .algorithm)
         for dig in $(ls *.dig)
         do
-          echo with $algorithm, for digest: $dig
+          echo with $algorithm, for digest: $dig = $(cat $dig)
           echo sign-digest ${{inputs.provider}} $algorithm "$(cat $dig)" > $dig.signed
         done  
         
@@ -41,6 +41,8 @@ jobs:
       with:
         name: ${{ env.artifact }}
         path: ${{ env.path }}
+        if-no-files-found: error
+        overwrite: true
 
     - id: clean-up
       run: rm rf ${{ env.path }}

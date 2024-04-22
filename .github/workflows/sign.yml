@@ -11,7 +11,7 @@ on:
       url:
         default: "https://software.sil.org"
         type: string
-      target:
+      artifact:
         required: true
         type: string
     secrets:
@@ -30,11 +30,12 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.target }}
+        path: targets-${{ inputs.target }}
 
     - id: generate
       uses: sillsdev/codesign/generate-digest@next
       with:
-        path: ${{ inputs.target }}
+        path: targets-${{ inputs.target }}/*
         hash: ${{ inputs.hash }}
         url: ${{ inputs.url }}
         public-cert: ${{ secrets.certificate }}

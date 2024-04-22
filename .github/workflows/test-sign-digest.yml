@@ -14,12 +14,12 @@ jobs:
     steps:
       - run: |
           mkdir .digest
-          echo sha256 >.digest/.algorithm
-          echo "$DIGEST" >.digest/test.dig
+          echo sha256 >.digests/.algorithm
+          echo "$DIGEST" >.digests/test.dig
       - uses: actions/upload-artifact@v4
         with:
           name: codesign-job-a-test
-          path: .digest
+          path: .digests
   
   sign:
     needs: setup

@@ -18,7 +18,7 @@ inputs:
 outputs:
     job: 
       description: The job describing the file and parameters to be processed by the sign-digest workflow.
-      value: ${{ steps.digest.outputs.job }}
+      value: ${{ fromJson(steps.digest.outputs) }}
 runs:
   using: composite
   steps:
@@ -30,15 +30,19 @@ runs:
     working-directory: ${{ inputs.path }}
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      New-Item -Path . -Name digests -ItemType "directory"
-      Set-Content .digests/certificate -Value ($PublicCert) -AsByteStream
-      Set-Content .digests/algorithm -Value '${{ inputs.algorithm }}'
+      $Targets = '${{ inputs.path }}'.Split("`n") -join ' '
+      Set-Content /tmp/certificate -Value ($PublicCert) -AsByteStream
 
-      ${{env.signtool}} sign /f .certificate /dg .digests /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v *
-      Write-Output ("job=" + (Get-FileHash . -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
+      ${{env.signtool}} sign /f /tmp/certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
+      Write-Output ("id=" + (Get-FileHash . -Algorithm MD5).Hash) >> $ENV:GITHUB_OUTPUT
+      Write-Output ('algorithm=${{ inputs.algorithm }}') >> $ENV:GITHUB_OUTPUT
+      Write-Output ('targets=$Targets') >> $ENV:GITHUB_OUTPUT
 
   - id: upload-working-dir
     uses: actions/upload-artifact@v4
     with:
-      name: codesign-job-${{ steps.digest.outputs.job }}
-      path: ${{ inputs.path }}
+      name: codesign-job-${{ steps.digest.outputs.id }}
+      path: |
+        ${{ inputs.path }}
+        *.p7u
+        *.dig

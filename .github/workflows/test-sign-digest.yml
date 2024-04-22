@@ -13,19 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          mkdir .digests
-          echo sha256 >.digests/.algorithm
-          echo "$DIGEST" >.digests/test.dig
+          echo "$DIGEST" >test.dig
       - uses: actions/upload-artifact@v4
         with:
           name: codesign-job-a-test
-          path: .digests/
+          path: |
+            *.dig
   
   sign:
     needs: setup
     uses: ./.github/workflows/sign-digest.yml
     with:
-      job: a-test
+      job: |
+        { 
+          "id": "a-test",
+          "algorithm": "sha256"
+        }
 
   check:
     runs-on: ubuntu-latest

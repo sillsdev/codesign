@@ -5,6 +5,10 @@ inputs:
   path:
     description: The path(s) of the file(s) to be signed
     required: true
+  algorithm:
+    description: Digest hash algorithm
+    default: "sha256"
+    required: true
   url:
     description: Time Stamp Authority URL
     required: true

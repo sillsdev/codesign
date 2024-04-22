@@ -13,24 +13,24 @@ runs:
   steps:
   - uses: actions/download-artifact@v4
     with:
-      name: codesign-job-${{ inputs.job }}
-      path: job-${{ inputs.job }}
+      name: codesign-job-${{ fromJSON(inputs.job).id }}
+      path: job-${{ fromJSON(inputs.job).id }}
   - uses: geekyeggo/delete-artifact@v5
     with:
-      name: codesign-job-${{ inputs.job }}
+      name: codesign-job-${{ fromJSON(inputs.job).id }}
   
   - id: apply-signed-digest
     shell: pwsh
-    working-directory: job-${{ inputs.job }}
+    working-directory: job-${{ fromJSON(inputs.job).id }}
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
-      ${{env.signtool}} sign /di .digests /v *
+      ${{env.signtool}} sign /di .digests /v ${{ fromJSON(inputs.job).targets }}
   
   - id: clean-up
     shell: pwsh
     run: |
-      Copy-Item -Path job-${{ inputs.job }} -Destination ${{ input.path }}
+      Copy-Item -Path job-${{ fromJSON(inputs.job).id }} -Destination ${{ input.path }}
       dir ${{ input.path }}
-      dir job-${{ inputs.job }}
-      Remove-Item job-${{ inputs.job }} -Recurse
+      dir job-${{ fromJSON(inputs.job).id }}
+      Remove-Item job-${{ fromJSON(inputs.job).id }} -Recurse

@@ -29,13 +29,10 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Path = @'
-      ${{ inputs.path }}
-      '@
-      $Targets = $Path -split "`n" -join ' '
+      $Targets = '${{ inputs.path }}' -split "`n"
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
-      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
+      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v ($Targets)
       Write-Output ('id=${{ hashFiles(inputs.path) }}') >> $ENV:GITHUB_OUTPUT
       Write-Output ('algorithm=${{ inputs.algorithm }}') >> $ENV:GITHUB_OUTPUT
       Write-Output ("targets=$Targets") >> $ENV:GITHUB_OUTPUT

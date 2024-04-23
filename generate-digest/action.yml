@@ -29,9 +29,9 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Targets = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
-      echo "+++++++ $Targets"
-      $Targets = Get-ChildItem . -Include $Targets -Name -Recurse
+      $Globs = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
+      echo "+++++++ $Globs"
+      $Targets = Get-ChildItem . -Include $Globs -Name -Recurse
       echo "------- $Targets"
       dir $Targets
       echo "======="

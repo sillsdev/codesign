@@ -37,14 +37,8 @@ runs:
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
-      New-Item -Path ..\${{ inputs.path }} -ItemType Directory -Force
+      New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       $Targets = '${{ fromJSON(inputs.job).targets }}'.Replace('|',',')
-      Copy-Item -Path . -Include $Targets -Destination ..\${{ inputs.path }}
-
-  - name: Clean up
-    shell: pwsh
-    env:
-      id: ${{ fromJSON(inputs.job).id }}
-    run: |
+      Copy-Item -Path job-${{ fromJSON(inputs.job).id }} -Include $Targets -Destination ${{ inputs.path }}
       dir ${{ inputs.path }}
       Remove-Item job-${{ env.id }} -Recurse

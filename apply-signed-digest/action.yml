@@ -39,7 +39,7 @@ runs:
     run: |
       New-Item -Path ..\${{ inputs.path }} -ItemType Directory -Force
       $Targets = '${{ fromJSON(inputs.job).targets }}'.Replace('|',',')
-      Copy-Item $Targets -Destination ..\${{ inputs.path }}
+      Copy-Item -Path . -Include $Targets -Destination ..\${{ inputs.path }}
 
   - name: Clean up
     shell: pwsh

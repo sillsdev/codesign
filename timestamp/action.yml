@@ -23,9 +23,10 @@ runs:
     run: |
       $ErrorActionPreferenceBak = $ErrorActionPreference
       $ErrorActionPreference    = 'Stop'
+      $Targets = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
       foreach ($attempt in 1..10) {
         try{
-          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{ inputs.algorithm }} /v ${{inputs.path}}
+          ${{env.signtool}} timestamp /tr ${{inputs.url}}  /td ${{ inputs.algorithm }} /v $Targets
           Write-Host "timestamp succeeded on try $attempt"              
           break
         } catch {

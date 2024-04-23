@@ -30,9 +30,9 @@ runs:
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
       $Targets = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
-      echo $Targets
+      echo "+++++++ $Targets"
       $Targets = Get-ChildItem . -Include $Targets -Name
-      echo $Targets
+      echo "------- $Targets"
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets

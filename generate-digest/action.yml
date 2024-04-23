@@ -33,6 +33,8 @@ runs:
       echo "+++++++ $Targets"
       $Targets = Get-ChildItem . -Include $Targets -Name
       echo "------- $Targets"
+      dir $Targets
+      echo "======="
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets

@@ -42,7 +42,9 @@ runs:
       echo 111111
       $Targets = '${{ fromJSON(inputs.job).targets }}'.Split('|')
       echo $Targets
-      Copy-Item -Path job-${{ fromJSON(inputs.job).id }}\* -Filter ($Targets) -Destination ${{ inputs.path }}
+      Push-Location job-${{ fromJSON(inputs.job).id }}
+      Move-Item $Targets -Destination ..\${{ inputs.path }}
+      Pop-Location
       echo 222222
       dir job-${{ fromJSON(inputs.job).id }}
       echo 333333

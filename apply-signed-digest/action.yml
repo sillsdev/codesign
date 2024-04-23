@@ -36,8 +36,15 @@ runs:
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
+      dir ${{ inputs.path }}
+      echo 000000
       New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
+      echo 111111
       $Targets = '${{ fromJSON(inputs.job).targets }}'.Replace('|',',')
       Copy-Item -Path job-${{ fromJSON(inputs.job).id }}\* -Include $Targets -Destination ${{ inputs.path }}
+      echo 222222
+      dir job-${{ fromJSON(inputs.job).id }}
+      echo 333333
       dir ${{ inputs.path }}
+      echo 444444
       Remove-Item job-${{ env.id }} -Recurse

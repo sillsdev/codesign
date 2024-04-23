@@ -1,9 +1,9 @@
 name: SignTool detached digest generator
-description: Generate a digest and partially signed artifact for further processing by remotesign workflow and techops/apply-digest action
+description: Generate a digest and partially signed artifact for further processing by remotesign workflow and codesign/apply-signed-digest action
 author: tim-seves
 inputs:
   path:
-    description: Directory containing files to sign
+    description: path of the files to sign, with one path or glob per line.
     required: true
   algorithm:
     description: Digest hash algorithm

@@ -5,21 +5,39 @@ on:
     - .github/workflows/sign-digest.yml
     - .github/workflows/test-sign-digest.yml
 env:
+  DIGEST: egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ=
   SIGNED_DIGEST: "Z+kPJkMX7Iu0uhmsOKSwxHUvMsUVGH3wVoEC7ZJaUw6XIM8WmpqXX66FIqyLWkMLTP5Qd4Iyh/ODx5rSWIWBavoR3je7GPDjM2nigfdZu3wwiu2SJS0ITgB9JsG5sBShNe1pySik1vCkAHdjz+akgoE5+sGikzHm4cpB4tgBqVSvehSgJeTGLJpiBJWD+KfpMrYJ7wxOam4n/gp2vOKcrGiV9kPWnT0eVsFJJzTHe0vI7jLgWZVog5ECDZyLRC/tKWWbdt0ZwehmRKRBPwnLMKjNHeOvavwZiex5ImJifD0CKvEzEh78iMwNTbIe1vBjdF/XAvlq1OB6r8q5wQKQkXAkDaokmBvzpXC8mxqK/r++gyR3qdu9Uzk9/5qA3BPT5IMsYBtjr6XlVQ4jeQAY8mN8EWVEpC8sAE54neyPV/pUpyB3KW8p/8rVr3s8itaQ8J2Ylq2YPTPjwGf1uMupOsUl874vHTFkV5jstWFedntzxGPrsigLaVf92KQrzcAEt6xibKr80EofHKNJz1ZCnOvqQR/aUH41JYiaDhZBNGDEg0oyA0wrNyrQLCCtG9k669hhrg/KGdbJQJrP+P6n17Rzhb3hikKhiDXRTxSfErZgdXmt6ZQ9myKEbIpHjh/5+t0w1F7mrSjr3QT4ueeQNjEbKyd/5AZqVpTa+Gf/Jbw="
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "$DIGEST" >test.dig
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codesign-job-a-test
+          path: |
+            *.dig
+  
   sign:
+    needs: setup
     uses: ./.github/workflows/sign-digest.yml
     with:
-      job: '{"id":null, "algorithm":"sha256", "digest":"egf6ayf/Osfooq7xfsR5SjjvbGdMXVbtQZKe0aR8djQ="}'
+      job: |
+        { 
+          "id": "a-test",
+          "algorithm": "sha256"
+        }
 
   check:
     runs-on: ubuntu-latest
     needs: sign
-    env:
-      signed-digest: ${{ fromJSON(needs.sign.outputs.signed-job).signed-digest }}
     steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: codesign-job-a-test
     - run: |
-        echo "Result: ${{ env.signed-digest }}" >> $GITHUB_STEP_SUMMARY
+        echo "Result: $(cat test.dig.signed)" >> $GITHUB_STEP_SUMMARY
         echo "Expected: $SIGNED_DIGEST" >> $GITHUB_STEP_SUMMARY
-        test "${{ env.signed-digest }}" = "$SIGNED_DIGEST"
+        test "$(cat test.dig.signed)" = "$SIGNED_DIGEST"

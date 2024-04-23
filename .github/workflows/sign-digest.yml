@@ -10,24 +10,37 @@ on:
         required: true
         type: string
     outputs:
-      signed-job:
-        description: "Signature for the supplied digest"
+      signed-job: 
         value: ${{ jobs.sign-digest.outputs.job }}
 env:
   algorithm: ${{ fromJSON(inputs.job).algorithm }}
-  digest: ${{ fromJSON(inputs.job).digest }}
-  id: ${{ fromJSON(inputs.job).id }}
-  path: ${{ fromJSON(inputs.job).path }}
+  artifact: codesign-job-${{ fromJSON(inputs.job).id }}
+  path: job-${{ fromJSON(inputs.job).id }}
 jobs:
   sign-digest:
-    runs-on: [self-hosted, ltops-signing]
     outputs:
-      job: ${{ toJson(steps.sign.outputs) }}
+      job: ${{ inputs.job }}
+    runs-on: [self-hosted, ltops-signing]
     steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.artifact }}
+        path: ${{ env.path }}
+  
     - id: sign
+      working-directory: ${{ env.path }}
       run: |
-        signed_digest=$(sign-digest ${{inputs.provider}} ${{env.algorithm}} '${{env.digest}}')
-        echo "id=${{ env.id }}" >> "$GITHUB_OUTPUT"
-        echo "algorithm=${{ env.algorithm }}" >> "$GITHUB_OUTPUT"
-        echo "path=${{ env.path }}" >> "$GITHUB_OUTPUT"
-        echo "signed-digest=$signed_digest" >> "$GITHUB_OUTPUT"
+        for dig in $(ls *.dig)
+        do
+          sign-digest ${{inputs.provider}} ${{ env.algorithm }} "$(cat $dig)" > $dig.signed
+        done  
+        
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.artifact }}
+        path: ${{ env.path }}
+        if-no-files-found: error
+        overwrite: true
+
+    - id: clean-up
+      run: rm -rf ${{ env.path }}

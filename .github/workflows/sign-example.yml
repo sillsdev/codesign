@@ -18,14 +18,14 @@ jobs:
     - name: Upload job to be signed
       uses: actions/upload-artifact@v4
       with:
-        name: grcompiler.exe
-        path: grcompiler.exe
+        name: grcompiler
+        path: g*.exe
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign.yml@v1
+    uses: sillsdev/codesign/.github/workflows/sign.yml@v2
     with:
-      target: grcompiler.exe
+      artifact: grcompiler
     secrets:
       certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
@@ -38,9 +38,9 @@ jobs:
     - name: Download signed and timestamped job
       uses: actions/download-artifact@v4
       with:
-        name: grcompiler.exe
+        name: grcompiler
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v1
+      uses: sillsdev/codesign/verify-signature@v2
       with:
-        path: grcompiler.exe
+        path: g*.exe

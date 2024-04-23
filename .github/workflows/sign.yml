@@ -5,13 +5,13 @@ on:
       profile:
         default: "LsDevSectigoEV"
         type: string
-      hash:
+      algorithm:
         default: "sha256"
         type: string
       url:
         default: "https://software.sil.org"
         type: string
-      target:
+      artifact:
         required: true
         type: string
     secrets:
@@ -29,19 +29,20 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-        name: ${{ inputs.target }}
+        name: ${{ inputs.artifact }}
+        path: targets-${{ inputs.artifact }}
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@v1
+      uses: sillsdev/codesign/generate-digest@v2
       with:
-        path: ${{ inputs.target }}
-        hash: ${{ inputs.hash }}
+        path: targets-${{ inputs.artifact }}/*
+        algorithm: ${{ inputs.algorithm }}
         url: ${{ inputs.url }}
         public-cert: ${{ secrets.certificate }}
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v1
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
     with:
       job: ${{ needs.digest.outputs.job }}
    
@@ -49,19 +50,20 @@ jobs:
     needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@v1
+    - uses: sillsdev/codesign/apply-signed-digest@v2
       with:
+        path: targets-${{ inputs.artifact }}
         job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@v1
+      uses:  sillsdev/codesign/timestamp@v2
       with:
-        job: ${{ needs.remotesign.outputs.signed-job }}
+        path: targets-${{ inputs.artifact }}/*
     
     - id: upload
       uses: actions/upload-artifact@v4
       with:
-        name: ${{inputs.target}}
-        path: ${{inputs.target}}
+        name: ${{inputs.artifact}}
+        path: targets-${{inputs.artifact}}
         if-no-files-found: error
         overwrite: true

@@ -29,7 +29,10 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Targets = '${{ inputs.path }}'.Split("`n") -join ' '
+      $Path = @'
+      ${{ inputs.path }}
+      '@
+      $Targets = $Path -split "`n" -join ' '
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets

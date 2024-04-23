@@ -28,6 +28,7 @@ jobs:
         path: |
           gdlpp.exe
           grcompiler.exe
+          *.dll
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   sign:

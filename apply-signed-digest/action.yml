@@ -46,4 +46,5 @@ runs:
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
+      dir ${{ inputs.path }}
       Remove-Item job-${{ env.id }} -Recurse

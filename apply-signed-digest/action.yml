@@ -41,6 +41,7 @@ runs:
       New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       echo 111111
       $Targets = '${{ fromJSON(inputs.job).targets }}'.Replace('|',',')
+      echo $Targets
       Copy-Item -Path job-${{ fromJSON(inputs.job).id }}\* -Include $Targets -Destination ${{ inputs.path }}
       echo 222222
       dir job-${{ fromJSON(inputs.job).id }}

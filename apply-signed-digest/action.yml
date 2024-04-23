@@ -37,6 +37,7 @@ runs:
       id: ${{ fromJSON(inputs.job).id }}
       targets: ${{ fromJSON(inputs.job).targets }}
     run: |
+      New-Item -Path ..\${{ inputs.path }} -ItemType Directory -Force
       Copy-Item ${{env.targets}} -Destination ..\${{ inputs.path }}
 
   - name: Clean up

@@ -35,7 +35,7 @@ runs:
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
       Write-Output ('id=${{ hashFiles(inputs.path) }}') >> $ENV:GITHUB_OUTPUT
       Write-Output ('algorithm=${{ inputs.algorithm }}') >> $ENV:GITHUB_OUTPUT
-      Write-Output ('targets=($Targets -join ',')') >> $ENV:GITHUB_OUTPUT
+      Write-Output ('targets=' + ($Targets -join ',')) >> $ENV:GITHUB_OUTPUT
 
   - id: upload
     uses: actions/upload-artifact@v4

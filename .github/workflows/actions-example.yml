@@ -25,7 +25,9 @@ jobs:
       id: generate
       uses: sillsdev/codesign/generate-digest@v2
       with:
-        path: '*.exe'
+        path: |
+          gdlpp.exe
+          grcompiler.exe
         public-cert: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   sign:

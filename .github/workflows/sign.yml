@@ -33,7 +33,7 @@ jobs:
         path: targets-${{ inputs.artifact }}
 
     - id: generate
-      uses: sillsdev/codesign/generate-digest@v2
+      uses: sillsdev/codesign/generate-digest@fix/multifile-glob
       with:
         path: targets-${{ inputs.artifact }}/*
         algorithm: ${{ inputs.algorithm }}
@@ -42,7 +42,7 @@ jobs:
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/multifile-glob
     with:
       job: ${{ needs.digest.outputs.job }}
    
@@ -50,13 +50,13 @@ jobs:
     needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@v2
+    - uses: sillsdev/codesign/apply-signed-digest@fix/multifile-glob
       with:
         path: targets-${{ inputs.artifact }}
         job: ${{ needs.remotesign.outputs.signed-job }}
 
     - id: timestamp
-      uses:  sillsdev/codesign/timestamp@v2
+      uses:  sillsdev/codesign/timestamp@fix/multifile-glob
       with:
         path: targets-${{ inputs.artifact }}/*
     

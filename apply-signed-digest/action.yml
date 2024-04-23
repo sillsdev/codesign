@@ -33,7 +33,6 @@ runs:
   
   - name: Place signed files
     shell: pwsh
-    working-directory: job-${{ fromJSON(inputs.job).id }}
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |

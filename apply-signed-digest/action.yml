@@ -28,7 +28,7 @@ runs:
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
-      $Targets = '${{ fromJSON(inputs.job).targets }}'.Splt('|')
+      $Targets = '${{ fromJSON(inputs.job).targets }}' -split '|'
       ${{env.signtool}} sign /di . /v $Targets
   
   - name: Place signed files
@@ -38,7 +38,7 @@ runs:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
       New-Item -Path ..\${{ inputs.path }} -ItemType Directory -Force
-      $Targets = '${{ fromJSON(inputs.job).targets }}'.Replace('|',',')
+      $Targets = '${{ fromJSON(inputs.job).targets }}' -replace '|',','
       Copy-Item $Targets -Destination ..\${{ inputs.path }}
 
   - name: Clean up

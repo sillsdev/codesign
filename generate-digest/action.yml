@@ -34,7 +34,7 @@ runs:
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
-      job = @{
+      $job = @{
         id='${{ hashFiles(inputs.path) }}'
         algorithm='${{ inputs.algorithm }}'
         targets=$Targets

@@ -28,17 +28,18 @@ runs:
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
-      ${{env.signtool}} sign /di . /v ${{ fromJSON(inputs.job).targets }}
+      $Targets = '${{ fromJSON(inputs.job).targets }}'.Splt('|')
+      ${{env.signtool}} sign /di . /v $Targets
   
   - name: Place signed files
     shell: pwsh
     working-directory: job-${{ fromJSON(inputs.job).id }}
     env:
       id: ${{ fromJSON(inputs.job).id }}
-      targets: ${{ fromJSON(inputs.job).targets }}
     run: |
       New-Item -Path ..\${{ inputs.path }} -ItemType Directory -Force
-      Copy-Item ${{env.targets}} -Destination ..\${{ inputs.path }}
+      $Targets = '${{ fromJSON(inputs.job).targets }}'.Splt('|')
+      Copy-Item $Targets -Destination ..\${{ inputs.path }}
 
   - name: Clean up
     shell: pwsh

@@ -1,9 +1,9 @@
 name: SignTool detached digest generator
-description: Generate a digest and partially signed artifact for further processing by remotesign workflow and techops/apply-digest action
+description: Generate a digest and partially signed artifact for further processing by remotesign workflow and codesign/apply-signed-digest action
 author: tim-seves
 inputs:
   path:
-    description: Directory containing files to sign
+    description: path(s) of the files to sign, multiple files or globs are separated by path-separator.
     required: true
   algorithm:
     description: Digest hash algorithm
@@ -15,6 +15,10 @@ inputs:
   public-cert:
     description: Secret containing the Base64 encoded public cert to sign against.
     required: true
+  path-separator:
+    description: The separator between multiple path items (defaults to \n).
+    required: false
+    default: "`n"
 outputs:
     job: 
       description: The job describing the file and parameters to be processed by the sign-digest workflow.
@@ -29,7 +33,7 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Targets = '${{ inputs.path }}'.Split("`n") -join ' '
+      $Targets = '${{ inputs.path }}'.Split(${{ inpust.path-separator }}) -join ' '
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets

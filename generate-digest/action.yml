@@ -34,7 +34,7 @@ runs:
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
-      $Targets = '${{ inputs.path }}'.Trim().Split(${{ input.path-separator }}, [StringSplitOptions]::RemoveEmptyEntries)
+      $Targets = '${{ inputs.path }}'.Trim().Split(${{ inputs.path-separator }}, [StringSplitOptions]::RemoveEmptyEntries)
       $ResolvedTargets = Get-Item -Path $Targets
 
       ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $ResolvedTargets

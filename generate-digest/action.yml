@@ -18,11 +18,11 @@ inputs:
   path-separator:
     description: The separator between multiple path items (defaults to \n).
     required: false
-    default: "`n"
+    default: "[Environment]::NewLine"
 outputs:
     job: 
       description: The job describing the file and parameters to be processed by the sign-digest workflow.
-      value: ${{ toJSON(steps.digest.outputs) }}
+      value: ${{ steps.digest.outputs.job }}
 runs:
   using: composite
   steps:
@@ -33,18 +33,23 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Targets = '${{ inputs.path }}'.Split(${{ inpust.path-separator }}) -join ' '
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
+      $Targets = '${{ inputs.path }}'.Trim().Split(${{ inpust.path-separator }}, [StringSplitOptions]::RemoveEmptyEntries)
+      $ResolvedTargets = Get-Item -Path $Targets
 
-      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
-      Write-Output ('id=${{ hashFiles(inputs.path) }}') >> $ENV:GITHUB_OUTPUT
-      Write-Output ('algorithm=${{ inputs.algorithm }}') >> $ENV:GITHUB_OUTPUT
-      Write-Output ("targets=$Targets") >> $ENV:GITHUB_OUTPUT
+      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $ResolvedTargets
+
+      $job = @{
+        id='${{ hashFiles(inputs.path) }}'
+        algorithm='${{ inputs.algorithm }}'
+        targets=$Targets
+      } | ConvertTo-Json -Compress
+      Write-Output ('job=' + $job) >> $ENV:GITHUB_OUTPUT
 
   - id: upload
     uses: actions/upload-artifact@v4
     with:
-      name: codesign-job-${{ steps.digest.outputs.id }}
+      name: codesign-job-${{ fromJSON(steps.digest.outputs.job).id }}
       path: |
         ${{ inputs.path }}
         *.p7u

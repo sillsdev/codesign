@@ -42,9 +42,9 @@ runs:
       New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       echo 111111
       $Targets = (ConvertFrom-Json -InputObject '${{ inputs.job }}').Targets
+      Push-Location job-${{ fromJSON(inputs.job).id }}
       $Targets = Get-Item -Path $Targets
       echo $Targets
-      Push-Location job-${{ fromJSON(inputs.job).id }}
       Move-Item $Targets -Destination ..\${{ inputs.path }}
       Pop-Location
       echo 222222

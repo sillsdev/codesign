@@ -11,4 +11,6 @@ runs:
   - shell: pwsh
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
-    run: ${{ env.signtool }} verify /pa /v ${{ inputs.path }}
+    run: |
+      $Targets = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
+      ${{ env.signtool }} verify /pa /v $Targets

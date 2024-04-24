@@ -31,7 +31,7 @@ runs:
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
       $Globs = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
       echo "+++++++ $Globs"
-      $Targets = Get-ChildItem . -Include $Globs -Name -Recurse
+      $Targets = Get-ChildItem -Path * -Include $Globs -Name -Recurse
       echo "------- $Targets"
       dir $Targets
       echo "======="

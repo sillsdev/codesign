@@ -29,15 +29,11 @@ runs:
     shell: pwsh
     run: |
       $PublicCert = [System.Convert]::FromBase64String('${{ inputs.public-cert }}')
-      $Globs = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
-      echo "+++++++ $Globs"
-      $Targets = Get-Item -Path $Globs | ForEach-Object { $_.Name }
-      echo "------- $Targets"
-      dir $Targets
-      echo "======="
+      $Targets = '${{ inputs.path }}'.Trim().Split([Environment]::NewLine, [StringSplitOptions]::RemoveEmptyEntries)
+      $ResolvedTargets = Get-Item -Path $Targets
       Set-Content $ENV:TEMP\certificate -Value ($PublicCert) -AsByteStream
 
-      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $Targets
+      ${{env.signtool}} sign /f $ENV:TEMP\certificate /dg . /fd ${{ inputs.algorithm }} /du ${{ inputs.url }} /v $ResolvedTargets
       $job = @{
         id='${{ hashFiles(inputs.path) }}'
         algorithm='${{ inputs.algorithm }}'

@@ -29,6 +29,7 @@ runs:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
     run: |
       $Targets = (ConvertFrom-Json -InputObject '${{ inputs.job }}').Targets
+      $Targets = Get-Item -Path $Targets
       ${{env.signtool}} sign /di . /v $Targets
   
   - name: Place signed files
@@ -41,6 +42,7 @@ runs:
       New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       echo 111111
       $Targets = (ConvertFrom-Json -InputObject '${{ inputs.job }}').Targets
+      $Targets = Get-Item -Path $Targets
       echo $Targets
       Push-Location job-${{ fromJSON(inputs.job).id }}
       Move-Item $Targets -Destination ..\${{ inputs.path }}

@@ -37,7 +37,6 @@ runs:
     env:
       id: ${{ fromJSON(inputs.job).id }}
     run: |
-      dir ${{ inputs.path }}
       echo 000000
       New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       echo 111111

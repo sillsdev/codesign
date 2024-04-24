@@ -38,7 +38,6 @@ runs:
     run: |
       $OutputDir = New-Item -Path ${{ inputs.path }} -ItemType Directory -Force
       Push-Location job-${{ fromJSON(inputs.job).id }}
-      $Targets = (ConvertFrom-Json -InputObject '${{ inputs.job }}').Targets | Get-Item
-      Move-Item $Targets -Destination $OutputDir
+      (ConvertFrom-Json -InputObject '${{ inputs.job }}').Targets | Move-Item -Destination $OutputDir
       Pop-Location
       Remove-Item job-${{ env.id }} -Recurse

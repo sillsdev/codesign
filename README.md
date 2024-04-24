@@ -2,7 +2,7 @@
 
 This contains a front end reusable workflow `sign.yml`, and the actions and subworkflow that implement it along with tests/examples showing how to use them.
 
-The simplest interface is the `sillsdev/codesign/.github/workflows/sign.yml` reusable workflow. This allows the signing of a single file calling into `sillsdev/codesign/.github/workflows/sign-digest.yml` to pass the detach digest for signing on our in house code signing system. Files to be signed must be passed in as artifacts.
+The simplest interface is the `sillsdev/codesign/.github/workflows/sign.yml` reusable workflow. This allows the signing of a single file calling into `sillsdev/codesign/.github/workflows/sign-digest.yml` to pass the detach digest for signing on our in-house code signing system. Files to be signed must be passed in as artifacts.
 
 There are a several actions that facilitate direct use of sign-digest.yml, removing the need to pass files via artifacts, and permitting the potential to generate, apply, timestamp and verify multiple files in phases. These are:
 

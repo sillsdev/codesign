@@ -33,7 +33,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/spaces-in-file-names-again
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
     with:
       job: ${{ needs.build.outputs.job1 }}
   

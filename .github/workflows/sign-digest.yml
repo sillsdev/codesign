@@ -32,7 +32,7 @@ jobs:
       run: |
         for dig in $(ls *.dig)
         do
-          sign-digest ${{inputs.provider}} ${{ env.algorithm }} "$(cat $dig)" > $dig.signed
+          sign-digest ${{inputs.provider}} ${{ env.algorithm }} \'$(cat "$dig")\' > $dig.signed
         done  
         
     - uses: actions/upload-artifact@v4

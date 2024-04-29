@@ -14,6 +14,7 @@ jobs:
     steps:
       - run: |
           echo "$DIGEST" >test.dig
+          echo "SDIGEST" >test\ with\ spaces.dig
       - uses: actions/upload-artifact@v4
         with:
           name: codesign-job-a-test
@@ -38,6 +39,8 @@ jobs:
       with:
         name: codesign-job-a-test
     - run: |
-        echo "Result: $(cat test.dig.signed)" >> $GITHUB_STEP_SUMMARY
+        echo "Result 1: $(cat test.dig.signed)" >> $GITHUB_STEP_SUMMARY
+        echo "Result 2: $(cat test\ with\ spaces.dig.signed)" >> $GITHUB_STEP_SUMMARY
         echo "Expected: $SIGNED_DIGEST" >> $GITHUB_STEP_SUMMARY
         test "$(cat test.dig.signed)" = "$SIGNED_DIGEST"
+        test "$(cat test\ with\ space.dig.signed)" = "$SIGNED_DIGEST"

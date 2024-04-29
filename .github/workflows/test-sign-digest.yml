@@ -43,4 +43,4 @@ jobs:
         echo "Result 2: $(cat test\ with\ spaces.dig.signed)" >> $GITHUB_STEP_SUMMARY
         echo "Expected: $SIGNED_DIGEST" >> $GITHUB_STEP_SUMMARY
         test "$(cat test.dig.signed)" = "$SIGNED_DIGEST"
-        test "$(cat test\ with\ space.dig.signed)" = "$SIGNED_DIGEST"
+        test "$(cat test\ with\ spaces.dig.signed)" = "$SIGNED_DIGEST"

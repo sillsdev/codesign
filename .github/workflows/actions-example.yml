@@ -2,6 +2,7 @@ name: Demonstrate use of fine grained actions with sign-digest.yml workflow
 on:
   push:
     paths:
+    - .github/workflows/sign-digest.yml
     - .github/workflows/actions-example.yml
     - apply-signed-digest/**
     - generate-digest/**
@@ -32,7 +33,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/spaces-in-file-names-again
     with:
       job: ${{ needs.build.outputs.job1 }}
   

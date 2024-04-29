@@ -34,7 +34,6 @@ jobs:
         for dig in "${digests[@]}"
         do
           digest=$(cat "$dig")
-          echo ">>>> Digesting $dig: <| $digest |>" >&2
           sign-digest ${{inputs.provider}} ${{ env.algorithm }} "$digest" > "$dig.signed"
         done  
         

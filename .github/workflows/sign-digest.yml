@@ -31,11 +31,10 @@ jobs:
       working-directory: ${{ env.path }}
       run: |
         readarray -t digests <<<"$(ls *.dig)"
-        echo Found ${digests[@]} >&2
         for dig in "${digests[@]}"
         do
-          echo Digesting $dig >&2
           digest=$(cat "$dig")
+          echo ">>>> Digesting $dig: <| $digest |>" >&2
           sign-digest ${{inputs.provider}} ${{ env.algorithm }} "$digest" > "$dig.signed"
         done  
         

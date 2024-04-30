@@ -14,7 +14,7 @@ on:
         value: ${{ jobs.sign-digest.outputs.job }}
 env:
   algorithm: ${{ fromJSON(inputs.job).algorithm }}
-  artifact: codesign-job-${{ fromJSON(inputs.job).id }}
+  artifact: codesign-digests-${{ fromJSON(inputs.job).id }}
   path: job-${{ fromJSON(inputs.job).id }}
 jobs:
   sign-digest:

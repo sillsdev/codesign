@@ -18,9 +18,18 @@ runs:
     with:
       name: codesign-job-${{ env.id }}
       path: job-${{ env.id }}
+  - uses: actions/download-artifact@v4
+    env:
+      id: ${{ fromJSON(inputs.job).id }}
+    with:
+      name: codesign-digests-${{ env.id }}
+      path: job-${{ env.id }}
   - uses: geekyeggo/delete-artifact@v5
     with:
       name: codesign-job-${{ fromJSON(inputs.job).id }}
+  - uses: geekyeggo/delete-artifact@v5
+    with:
+      name: codesign-digests-${{ fromJSON(inputs.job).id }}
   
   - id: apply-signed-digest
     shell: pwsh

@@ -17,7 +17,7 @@ jobs:
           echo "$DIGEST" >test\ with\ spaces.dig
       - uses: actions/upload-artifact@v4
         with:
-          name: codesign-job-a-test
+          name: codesign-digests-a-test
           path: |
             *.dig
   
@@ -37,7 +37,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-        name: codesign-job-a-test
+        name: codesign-digests-a-test
     - run: |
         echo "Result 1: $(cat test.dig.signed)" >> $GITHUB_STEP_SUMMARY
         echo "Result 2: $(cat test\ with\ spaces.dig.signed)" >> $GITHUB_STEP_SUMMARY

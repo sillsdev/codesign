@@ -23,7 +23,7 @@ jobs:
 
     - name: Generate job from file and certificate.
       id: generate
-      uses: sillsdev/codesign/generate-digest@v2
+      uses: sillsdev/codesign/generate-digest@fix/too-much-state
       with:
         path: |
           gdlpp.exe
@@ -33,7 +33,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/too-much-state
     with:
       job: ${{ needs.build.outputs.job1 }}
   
@@ -44,17 +44,17 @@ jobs:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.
     - name: Apply signatures to file in job
-      uses: sillsdev/codesign/apply-signed-digest@v2
+      uses: sillsdev/codesign/apply-signed-digest@fix/too-much-state
       with:
         job: ${{ needs.sign.outputs.signed-job }}
 
     # Same potential to timestamp, and/or verify mulitple signed deliverables.
     - name: Timestamp file in job
-      uses:  sillsdev/codesign/timestamp@v2
+      uses:  sillsdev/codesign/timestamp@fix/too-much-state
       with:
         path: '*.exe'
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v2
+      uses: sillsdev/codesign/verify-signature@fix/too-much-state
       with:
         path:  '*.exe'

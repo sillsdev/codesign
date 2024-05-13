@@ -16,6 +16,10 @@ on:
         description: The repository where the generate-digest workflow ran
         required: true
         type: string
+      workflow_run:
+        description: The workflow run_id to use for getting job artifacts
+        required: true
+        type: string
   workflow_call:
     inputs:
       provider:
@@ -50,15 +54,19 @@ jobs:
     - name: Download Artifact (Workflow Dispatch)
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
-        curl -L "https://api.github.com/repos/${{ inputs.calling-repo }}/actions/artifacts/${{ env.artifact }}" \
+        ARTIFACT_INFO=$(curl -L \
+         -H "Accept: application/vnd.github+json" \
+         -H "Authorization: Bearer ${{ inputs.token }}" \
+         -H "X-GitHub-Api-Version: 2022-11-28" \
+         https://api.github.com/repos/${{ inputs.calling-repo }}/actions/runs/${{ inputs.workflow_run }}/artifacts)
+        # Using grep and awk extrat the download url for the codesign-digest artifact
+        DOWNLOAD_URL=$(echo "$ARTIFACT_INFO" | grep -A 10 "\"name\": \"${{ env.artifact }}\"" | grep '"archive_download_url":' | awk -F '"' '{print $4}')
+        echo "Dowload URL extracted: $DOWNLOAD_URL"
+        curl -L "$DOWNLOAD_URL" \
         -o "artifact.zip" \
         -H "Authorization: Bearer ${{ inputs.token }}" \
         -H "Accept: application/vnd.github.v3+json"
-        echo "Artifacts downloaded"
-        ls -lh artifact.zip
-        file artifact.zip
-        cat artifact.zip
-#        unzip "artifact.zip" -d ${{ env.path }}
+        unzip "artifact.zip" -d ${{ env.path }}
  
     - id: sign
       working-directory: ${{ env.path }}

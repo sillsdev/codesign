@@ -14,6 +14,10 @@ on:
       artifact:
         required: true
         type: string
+      description:
+        description: The description displayed to the user during UAC prompts. (will be a random temp file name otherwise)
+        required: false
+        type: string
     secrets:
       certificate:
         required: true
@@ -50,10 +54,11 @@ jobs:
     needs: remotesign
     runs-on: windows-latest
     steps:
-    - uses: sillsdev/codesign/apply-signed-digest@v2.0.3
+    - uses: sillsdev/codesign/apply-signed-digest@feature/enableDispatchCalls
       with:
         path: targets-${{ inputs.artifact }}
         job: ${{ needs.remotesign.outputs.signed-job }}
+        description: ${{ inputs.description }}
 
     - id: timestamp
       uses:  sillsdev/codesign/timestamp@v2.0.3

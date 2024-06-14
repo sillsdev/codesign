@@ -26,6 +26,7 @@ jobs:
     uses: sillsdev/codesign/.github/workflows/sign.yml@v2
     with:
       artifact: grcompiler
+      description: Graphite
     secrets:
       certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 

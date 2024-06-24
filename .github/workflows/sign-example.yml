@@ -23,7 +23,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign.yml@v2.1
     with:
       artifact: grcompiler
       description: Graphite

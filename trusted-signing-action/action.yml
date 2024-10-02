@@ -1,0 +1,91 @@
+name: Simplified Trusted Signing Action
+description: Sign any Microsoft code or bundle using Microsofts Trusted Signing Service.
+author: tim-seves
+inputs:
+  authentication:
+    description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service.
+    default: ${{ secrets.AZURE_TRUSTED_SIGNING_CREDENTIALS }}
+    required: false
+  account:
+    description: A JSON object containing the endpoing, account and certificate identification
+    default: ${{ vars.TRUSTED_SIGNING_CERTIFICATE_ENDPOINT }}
+    required: false
+  files:
+    description: A comma or newline separated list of absolute paths to the files being signed. Can be combined
+                 with the files-folder and file-catalog inputs.
+    required: false
+  files-folder:
+    description: The folder containing files to be signed. Can be combined with the files and file-catalog inputs.
+    required: false
+  files-folder-filter:
+    description: A comma separated list of file extensions that determines which types of files will
+                 be signed in the folder specified by the files-folder input. E.g., 'dll,exe,msix'.
+                 Any file type not included in this list will not be signed. If this input is not used,
+                 all files in the folder will be signed. Supports wildcards for matching multiple file
+                 names with a pattern.
+    required: false
+  files-folder-recurse:
+    description: A boolean value (true/false) that indicates if the folder specified by the files-folder
+                 input should be searched recursively. The default value is false.
+    required: false
+  files-folder-depth:
+    description: An integer value that indicates the depth of the recursive search toggled by the
+                 files-folder-recursive input.
+    required: false
+  files-catalog:
+    description: A file containing a list of relative paths to the files being signed. The paths
+                 should be relative to the location of the catalog file. Each file path should be on
+                 a separate line. Can be combined with the files and files-folder inputs.
+    required: false
+  description:
+    description: A description of the signed content.
+    required: false
+  description-url:
+    description: A Uniform Resource Locator (URL) for the expanded description of the signed content.
+    required: false
+  timeout:
+    description: The number of seconds that the Trusted Signing service will wait for all files
+                 to be signed before it exits. The default value is 300 seconds.
+    required: false
+  batch-size:
+    description: The summed length of file paths that can be signed with each signtool call. This parameter
+                 should only be relevant if you are signing a large number of files. Increasing the value
+                 may result in performance gains at the risk of potentially hitting your system's maximum
+                 command length limit. The minimum value is 0 and the maximum value is 30000. A value of
+                 0 means that every file will be signed with an individual call to signtool.
+    required: false
+runs:
+  using: composite
+  steps:
+  - uses: azure/trusted-signing-action
+    with: 
+      exclude-environment-credential: false
+      exclude-workload-identity-credential: true
+      exclude-managed-identity-credential: true
+      exclude-shared-token-cache-credential: true
+      exclude-visual-studio-credential: true
+      exclude-visual-studio-code-credential: true
+      exclude-azure-cli-credential: true
+      exclude-azure-powershell-credential: true
+      exclude-azure-developer-cli-credential: true
+      exclude-interactive-browser-credential: true
+      file-digest: SHA256
+      timestamp-rfc3161: http://timestamp.acs.microsoft.com
+      timestamp-digest: SHA256
+      trace: ${{ runner.debug == '1' }}
+      azure-tenant-id: ${{ fromJSON(inputs.authentication).tenant-id }}
+      azure-client-id: ${{ fromJSON(inputs.authentication).client-id }}
+      azure-client-secret: ${{ fromJSON(inputs.authentication).client-secret }}
+      endpoint: ${{ fromJSON(inputs.account).endpoint }}
+      trusted-signing-account-name: ${{ fromJSON(inputs.account).account-name }}
+      certificate-profile-name: ${{ fromJSON(inputs.account).profile-name }}
+      files: ${{ inputs.files }}
+      files-folder: ${{ inputs.files-folder }}
+      files-folder-filter: ${{ inputs.files-folder-filter }}
+      files-folder-recurse: ${{ inputs.files-folder-recurse }}
+      files-folder-depth: ${{ inputs.files-folder-depth }}
+      files-catalog: ${{ inputs.files-catalog }}
+      description: ${{ inputs.description }}
+      description-url: ${{ inputs.description-url }}
+      timeout: ${{ inputs.timeout }}
+      batch-size: ${{ inputs.batch-size }}

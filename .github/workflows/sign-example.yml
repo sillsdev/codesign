@@ -15,33 +15,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Upload job to be signed
-      uses: actions/upload-artifact@v4
+    - uses: sillsdev/codesign/trusted-signing-action@feat/trusted-signing-service-action
       with:
-        name: grcompiler
-        path: g*.exe
-
-  sign:
-    needs: build
-    uses: sillsdev/codesign/.github/workflows/sign.yml@v2.1
-    with:
-      artifact: grcompiler
-      description: Graphite
-    secrets:
-      certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
-
-  test:
-    runs-on: windows-latest
-    needs: sign
-    env:
-      signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe
-    steps:
-    - name: Download signed and timestamped job
-      uses: actions/download-artifact@v4
-      with:
-        name: grcompiler
+        files: |
+          ${{ github.workspace }}\grcompiler.exe
+          ${{ github.workspace }}\gdlpp.exe
+        description: Graphite Description Language compiler
+        description-url: https://graphite.sil.org
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v2
+      uses: sillsdev/codesign/verify-signature@feat/trusted-signing-service-action
       with:
         path: g*.exe

@@ -4,10 +4,8 @@ on:
     paths:
     - .github/workflows/sign.yml
     - .github/workflows/sign-example.yml
-    - apply-signed-digest/**
-    - generate-digest/**
-    - timestamp/**
     - verify-signature/**
+    - trusted-signing-action/**
 
 jobs:
   build:

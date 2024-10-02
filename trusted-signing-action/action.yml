@@ -4,11 +4,11 @@ author: tim-seves
 inputs:
   authentication:
     description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service.
-    default: ${{ secrets.AZURE_TRUSTED_SIGNING_CREDENTIALS }}
+    default: AZURE_TRUSTED_SIGNING_CREDENTIALS
     required: false
   account:
     description: A JSON object containing the endpoing, account and certificate identification
-    default: ${{ vars.TRUSTED_SIGNING_CERTIFICATE_ENDPOINT }}
+    default: TRUSTED_SIGNING_CERTIFICATE_ENDPOINT
     required: false
   files:
     description: A comma or newline separated list of absolute paths to the files being signed. Can be combined
@@ -57,7 +57,7 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: azure/trusted-signing-action
+  - uses: azure/trusted-signing-action@0.4.0
     with: 
       exclude-environment-credential: false
       exclude-workload-identity-credential: true
@@ -73,12 +73,12 @@ runs:
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
       trace: ${{ runner.debug == '1' }}
-      azure-tenant-id: ${{ fromJSON(inputs.authentication).tenant-id }}
-      azure-client-id: ${{ fromJSON(inputs.authentication).client-id }}
-      azure-client-secret: ${{ fromJSON(inputs.authentication).client-secret }}
-      endpoint: ${{ fromJSON(inputs.account).endpoint }}
-      trusted-signing-account-name: ${{ fromJSON(inputs.account).account-name }}
-      certificate-profile-name: ${{ fromJSON(inputs.account).profile-name }}
+      azure-tenant-id: ${{ fromJSON(secrets[inputs.authentication]).tenant-id }}
+      azure-client-id: ${{ fromJSON(secrets[inputs.authentication]).client-id }}
+      azure-client-secret: ${{ fromJSON(secrets[inputs.authentication]).client-secret }}
+      endpoint: ${{ fromJSON(vars[inputs.account]).endpoint }}
+      trusted-signing-account-name: ${{ fromJSON(vars[inputs.account]).account-name }}
+      certificate-profile-name: ${{ fromJSON(vars[inputs.account]).profile-name }}
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}
       files-folder-filter: ${{ inputs.files-folder-filter }}

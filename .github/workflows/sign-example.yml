@@ -15,7 +15,8 @@ jobs:
     
     - uses: sillsdev/codesign/trusted-signing-action@feat/trusted-signing-service-action
       with:
-        account: TRUSTED_SIGNING_TEST_CERT
+        authentication: ${{ secrets.AZURE_TRUSTED_SIGNING_CREDENTIALS}}
+        account: ${{ vars.TRUSTED_SIGNING_TEST_CERT }}
         files: |
           ${{ github.workspace }}\grcompiler.exe
           ${{ github.workspace }}\gdlpp.exe

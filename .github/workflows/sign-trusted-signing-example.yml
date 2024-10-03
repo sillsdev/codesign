@@ -1,4 +1,4 @@
-name: Demonstrate simple sign.yml workflow.
+name: Demonstrate simple trusted-signing-action.
 on:
   push:
     paths:

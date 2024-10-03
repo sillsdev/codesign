@@ -92,7 +92,7 @@ runs:
       azure-client-secret: ${{ fromJSON(inputs.credentials).client-secret }}
       endpoint: ${{ fromJSON(inputs.credentials).endpoint }}
       trusted-signing-account-name: ${{ fromJSON(inputs.credentials).account-name }}
-      certificate-profile-name: ${{ fromJSON(inputs.use-test-certificate) && "sil-codesign-test" || "sil-codesign-production" }}
+      certificate-profile-name: ${{ (fromJSON(inputs.use-test-certificate) == true) && 'sil-codesign-test' || 'sil-codesign-production' }}
       # Inputs we want to pass through.
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}

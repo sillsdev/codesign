@@ -17,6 +17,7 @@ jobs:
       with:
         credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
         use-test-certificate: true
+        files-folder: .
         files-folder-filter: exe
         description: Graphite Description Language compiler
         description-url: https://graphite.sil.org

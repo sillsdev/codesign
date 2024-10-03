@@ -71,12 +71,12 @@ runs:
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
       trace: ${{ runner.debug == '1' }}
-      azure-tenant-id: ${{ fromJSON(input.authentication).tenant-id }}
-      azure-client-id: ${{ fromJSON(input.authentication).client-id }}
-      azure-client-secret: ${{ fromJSON(input.authentication).client-secret }}
-      endpoint: ${{ fromJSON(input.account).endpoint }}
-      trusted-signing-account-name: ${{ fromJSON(input.account).account-name }}
-      certificate-profile-name: ${{ fromJSON(input.account).profile-name }}
+      azure-tenant-id: ${{ fromJSON(inputs.authentication).tenant-id }}
+      azure-client-id: ${{ fromJSON(inputs.authentication).client-id }}
+      azure-client-secret: ${{ fromJSON(inputs.authentication).client-secret }}
+      endpoint: ${{ fromJSON(inputs.account).endpoint }}
+      trusted-signing-account-name: ${{ fromJSON(inputs.account).account-name }}
+      certificate-profile-name: ${{ fromJSON(inputs.account).profile-name }}
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}
       files-folder-filter: ${{ inputs.files-folder-filter }}

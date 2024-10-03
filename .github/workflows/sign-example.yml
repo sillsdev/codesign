@@ -15,11 +15,9 @@ jobs:
     
     - uses: sillsdev/codesign/trusted-signing-action@feat/trusted-signing-service-action
       with:
-        authentication: ${{ secrets.AZURE_TRUSTED_SIGNING_CREDENTIALS}}
-        account: ${{ vars.TRUSTED_SIGNING_TEST_CERT }}
-        files: |
-          ${{ github.workspace }}\grcompiler.exe
-          ${{ github.workspace }}\gdlpp.exe
+        credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
+        use-test-certificate: true
+        files-folder-filter: exe
         description: Graphite Description Language compiler
         description-url: https://graphite.sil.org
 

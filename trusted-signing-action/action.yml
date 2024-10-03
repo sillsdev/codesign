@@ -2,12 +2,24 @@ name: Simplified Trusted Signing Action
 description: Sign any Microsoft code or bundle using Microsofts Trusted Signing Service.
 author: tim-seves
 inputs:
-  authentication:
+  # The expected credentials value is a JSON string containing these fields:
+  # {
+  #   "tenant-id": "",
+  #   "client-id": "",
+  #   "client-secret": "",
+  #   "endpoint": "",
+  #   "account-name": ""
+  # }
+  credentials:
     description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service.
     required: false
-  account:
-    description: A JSON object containing the endpoing, account and certificate identification
+  use-test-certificate:
+    description: Use the Public Trust Test certificate for signing. This will allow signing to complete
+                 as normal. However it uses a certificate from an unverifiable root of trust, preventing
+                 test code from being distributed or accidentally uploaded.
     required: false
+    default: 'false'
+  # These are all just passed through verbatim to the azure/trusted-signing-action.
   files:
     description: A comma or newline separated list of absolute paths to the files being signed. Can be combined
                  with the files-folder and file-catalog inputs.
@@ -52,11 +64,16 @@ inputs:
                  command length limit. The minimum value is 0 and the maximum value is 30000. A value of
                  0 means that every file will be signed with an individual call to signtool.
     required: false
+  trace:
+    description: A boolean value (true/false) that controls trace logging. The default value is false.
+    required: false
+    default: ${{ runner.debug == '1' }}
 runs:
   using: composite
   steps:
   - uses: azure/trusted-signing-action@v0.4.0
     with: 
+      # Parameters we want fixed
       exclude-environment-credential: false
       exclude-workload-identity-credential: true
       exclude-managed-identity-credential: true
@@ -70,13 +87,13 @@ runs:
       file-digest: SHA256
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
-      trace: ${{ runner.debug == '1' }}
-      azure-tenant-id: ${{ fromJSON(inputs.authentication).tenant-id }}
-      azure-client-id: ${{ fromJSON(inputs.authentication).client-id }}
-      azure-client-secret: ${{ fromJSON(inputs.authentication).client-secret }}
-      endpoint: ${{ fromJSON(inputs.account).endpoint }}
-      trusted-signing-account-name: ${{ fromJSON(inputs.account).account-name }}
-      certificate-profile-name: ${{ fromJSON(inputs.account).profile-name }}
+      azure-tenant-id: ${{ fromJSON(inputs.credentials).tenant-id }}
+      azure-client-id: ${{ fromJSON(inputs.credentials).client-id }}
+      azure-client-secret: ${{ fromJSON(inputs.credentials).client-secret }}
+      endpoint: ${{ fromJSON(inputs.credentials).endpoint }}
+      trusted-signing-account-name: ${{ fromJSON(inputs.credentials).account-name }}
+      certificate-profile-name: ${{ inputs.certificate-profile-name }}
+      # Inputs we want to pass through.
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}
       files-folder-filter: ${{ inputs.files-folder-filter }}
@@ -87,3 +104,4 @@ runs:
       description-url: ${{ inputs.description-url }}
       timeout: ${{ inputs.timeout }}
       batch-size: ${{ inputs.batch-size }}
+      trace: ${{ inputs.trace }}

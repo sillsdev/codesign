@@ -1,0 +1,27 @@
+name: Demonstrate simple trusted-signing-action.
+on:
+  push:
+    paths:
+    - .github/workflows/sign.yml
+    - .github/workflows/sign-example.yml
+    - verify-signature/**
+    - trusted-signing-action/**
+
+jobs:
+  sign:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: sillsdev/codesign/trusted-signing-action@v3
+      with:
+        credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
+        files-folder: .
+        files-folder-filter: exe
+        description: Graphite Description Language compiler
+        description-url: https://graphite.sil.org
+
+    - name: Confirm signature
+      uses: sillsdev/codesign/verify-signature@v3
+      with:
+        path: g*.exe

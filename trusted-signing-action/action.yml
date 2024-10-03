@@ -16,7 +16,8 @@ inputs:
   use-test-certificate:
     description: Use the Public Trust Test certificate for signing. This will allow signing to complete
                  as normal. However it uses a certificate from an unverifiable root of trust, preventing
-                 test code from being distributed or accidentally uploaded.
+                 test code from being distributed or accidentally uploaded. This defaults to 'false' as 
+                 most of the you will want to be signing with the production certificate.
     required: false
     default: 'false'
   # These are all just passed through verbatim to the azure/trusted-signing-action.

@@ -55,7 +55,7 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: azure/trusted-signing-action@0.4.0
+  - uses: azure/trusted-signing-action@v0.4.0
     with: 
       exclude-environment-credential: false
       exclude-workload-identity-credential: true

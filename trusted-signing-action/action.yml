@@ -20,7 +20,7 @@ inputs:
                  test code from being distributed or accidentally uploaded. This defaults to 'false' as 
                  most of the you will want to be signing with the production certificate.
     required: false
-    default: false
+    default: ${{ false }}
   # These are all just passed through verbatim to the azure/trusted-signing-action.
   files:
     description: A comma or newline separated list of absolute paths to the files being signed. Can be combined

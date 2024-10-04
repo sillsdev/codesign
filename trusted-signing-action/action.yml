@@ -11,8 +11,9 @@ inputs:
   #   "account-name": ""
   # }
   credentials:
-    description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service.
-    required: false
+    description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service,
+                 the individual secrets will be masked in the logs.
+    required: true
   use-test-certificate:
     description: Use the Public Trust Test certificate for signing. This will allow signing to complete
                  as normal. However it uses a certificate from an unverifiable root of trust, preventing
@@ -72,6 +73,20 @@ inputs:
 runs:
   using: composite
   steps:
+  - id: credentials
+    uses: actions/github-script@v7
+    with:
+      script: |
+        const test_cert = core.getBooleanInput("use-test-certificate", { required: false });
+        let credentials = JSON.parse(core.getInput("credentials", { required: true }));
+
+        credentials.profile-name = test_cert ? 'sil-codesign-test' : 'sil-codesign-production';
+        core.setSecret(credentials.tenant-id);
+        core.setSecret(credentials.client-id);
+        core.setSecret(credentials.secret);
+        core.setSecret(credentials.account-name);
+        return credentials;
+
   - uses: azure/trusted-signing-action@v0.4.0
     with: 
       # Parameters we want fixed
@@ -88,12 +103,12 @@ runs:
       file-digest: SHA256
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
-      azure-tenant-id: ${{ fromJSON(inputs.credentials).tenant-id }}
-      azure-client-id: ${{ fromJSON(inputs.credentials).client-id }}
-      azure-client-secret: ${{ fromJSON(inputs.credentials).client-secret }}
-      endpoint: ${{ fromJSON(inputs.credentials).endpoint }}
-      trusted-signing-account-name: ${{ fromJSON(inputs.credentials).account-name }}
-      certificate-profile-name: ${{ (fromJSON(inputs.use-test-certificate) == true) && 'sil-codesign-test' || 'sil-codesign-production' }}
+      azure-tenant-id: ${{ steps.credentials.output.tenant-id }}
+      azure-client-id: ${{ steps.credentials.output.client-id }}
+      azure-client-secret: ${{ steps.credentials.output.client-secret }}
+      endpoint: ${{ steps.credentials.output.endpoint }}
+      trusted-signing-account-name: ${{ steps.credentials.output.account-name }}
+      certificate-profile-name: ${{ steps.credentials.output.profile-name }}
       # Inputs we want to pass through.
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}

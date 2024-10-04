@@ -78,6 +78,7 @@ runs:
     with:
       script: |
         const input_test_cert = core.getInput("use-test-certificate");
+        core.info(`use-test-certificate = ${input_test_cert}`)
         const test_cert = JSON.parse(input_test_cert);
         let credentials = JSON.parse(core.getInput("credentials", { required: true }));
 

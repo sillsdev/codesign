@@ -79,16 +79,14 @@ runs:
       credentials: ${{ inputs.credentials }}
       use-test-certificate: ${{ inputs.use-test-certificate }}
       script: |
-        // const input_test_cert = core.getInput("use-test-certificate")
-        // core.info(`use-test-certificate = ${input_test_cert}`)
-        // const test_cert = JSON.parse(input_test_cert)
+        const test_cert = core.getBooleanInput("use-test-certificate")
         let credentials = JSON.parse(core.getInput("credentials", { required: true }))
 
-        // credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production"
-        core.setSecret(credentials.'tenant-id')
-        core.setSecret(credentials.'client-id')
-        core.setSecret(credentials.'client-secret')
-        core.setSecret(credentials.'account-name')
+        credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production"
+        core.setSecret(credentials["tenant-id"])
+        core.setSecret(credentials["client-id"])
+        core.setSecret(credentials["client-secret"])
+        core.setSecret(credentials["account-name"])
         console.log(credentials)
         return credentials
 

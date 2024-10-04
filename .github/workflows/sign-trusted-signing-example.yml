@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - uses: sillsdev/codesign/trusted-signing-action@fix/mask-off-derived-secrets
+    - uses: sillsdev/codesign/trusted-signing-action@v3
       with:
         credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
         files-folder: .
@@ -22,6 +22,6 @@ jobs:
         description-url: https://graphite.sil.org
 
     - name: Confirm signature
-      uses: sillsdev/codesign/verify-signature@v2
+      uses: sillsdev/codesign/verify-signature@v3
       with:
         path: g*.exe

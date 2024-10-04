@@ -106,12 +106,12 @@ runs:
       file-digest: SHA256
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
-      azure-tenant-id: ${{ steps.credentials.output.tenant-id }}
-      azure-client-id: ${{ steps.credentials.output.client-id }}
-      azure-client-secret: ${{ steps.credentials.output.client-secret }}
-      endpoint: ${{ steps.credentials.output.endpoint }}
-      trusted-signing-account-name: ${{ steps.credentials.output.account-name }}
-      certificate-profile-name: ${{ steps.credentials.output.profile-name }}
+      azure-tenant-id: ${{ steps.credentials.outputs.result.tenant-id }}
+      azure-client-id: ${{ steps.credentials.outputs.result.client-id }}
+      azure-client-secret: ${{ steps.credentials.outputs.result.client-secret }}
+      endpoint: ${{ steps.credentials.outputs.result.endpoint }}
+      trusted-signing-account-name: ${{ steps.credentials.outputs.result.account-name }}
+      certificate-profile-name: ${{ steps.credentials.outputs.result.profile-name }}
       # Inputs we want to pass through.
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}

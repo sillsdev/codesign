@@ -89,7 +89,7 @@ runs:
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials.secret)
         core.setSecret(credentials["account-name"])
-        core.info(`credentials = ${credentials}`)
+        console.log(credentials)
         return credentials
 
   - uses: azure/trusted-signing-action@v0.4.0

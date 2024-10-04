@@ -80,15 +80,17 @@ runs:
       use-test-certificate: ${{ inputs.use-test-certificate }}
       script: |
         const test_cert = core.getBooleanInput("use-test-certificate")
-        let credentials = JSON.parse(core.getInput("credentials", { required: true }))
-
-        credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production"
+        const credentials = JSON.parse(core.getInput("credentials", { required: true }))
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials["client-secret"])
         core.setSecret(credentials["account-name"])
-        console.log(credentials)
-        return credentials
+        core.setOutput("tenant-id", credentials["tenant-id"])
+        core.setOutput("client-id", credentials["client-id"])
+        core.setOutput("client-secret", credentials["client-secret"])
+        core.setOutput("account-name", credentials["account-name"])
+        core.setOutput("endpoint", credentials.endpoint)
+        core.setOutput("profile-name", test_cert ? "sil-codesign-test" : "sil-codesign-production")
 
   - uses: azure/trusted-signing-action@v0.4.0
     with: 
@@ -106,12 +108,12 @@ runs:
       file-digest: SHA256
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
-      azure-tenant-id: ${{ steps.credentials.outputs.result.tenant-id }}
-      azure-client-id: ${{ steps.credentials.outputs.result.client-id }}
-      azure-client-secret: ${{ steps.credentials.outputs.result.client-secret }}
-      endpoint: ${{ steps.credentials.outputs.result.endpoint }}
-      trusted-signing-account-name: ${{ steps.credentials.outputs.result.account-name }}
-      certificate-profile-name: ${{ steps.credentials.outputs.result.profile-name }}
+      azure-tenant-id: ${{ steps.credentials.outputs.tenant-id }}
+      azure-client-id: ${{ steps.credentials.outputs.client-id }}
+      azure-client-secret: ${{ steps.credentials.outputs.client-secret }}
+      endpoint: ${{ steps.credentials.outputs.endpoint }}
+      trusted-signing-account-name: ${{ steps.credentials.outputs.account-name }}
+      certificate-profile-name: ${{ steps.credentials.outputs.profile-name }}
       # Inputs we want to pass through.
       files: ${{ inputs.files }}
       files-folder: ${{ inputs.files-folder }}

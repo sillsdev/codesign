@@ -1,5 +1,6 @@
 name: Demonstrate simple trusted-signing-action.
 on:
+  workflow_dispatch: {}
   push:
     paths:
     - .github/workflows/sign.yml

@@ -80,17 +80,19 @@ runs:
       use-test-certificate: ${{ inputs.use-test-certificate }}
       script: |
         const test_cert = core.getBooleanInput("use-test-certificate")
+        const profile_name = test_cert ? "sil-codesign-test" : "sil-codesign-production"
         const credentials = JSON.parse(core.getInput("credentials", { required: true }))
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials["client-secret"])
         core.setSecret(credentials["account-name"])
+        core.setSecret(profile_name)
         core.setOutput("tenant-id", credentials["tenant-id"])
         core.setOutput("client-id", credentials["client-id"])
         core.setOutput("client-secret", credentials["client-secret"])
         core.setOutput("account-name", credentials["account-name"])
         core.setOutput("endpoint", credentials.endpoint)
-        core.setOutput("profile-name", test_cert ? "sil-codesign-test" : "sil-codesign-production")
+        core.setOutput("profile-name", profile_name)
 
   - uses: azure/trusted-signing-action@v0.4.0
     with: 

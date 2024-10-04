@@ -76,8 +76,8 @@ runs:
   - id: credentials
     uses: actions/github-script@v7
     with:
-      credentials: ${{ input.credentials }}
-      use-test-certificate: ${{ input.use-test-certificate }}
+      credentials: ${{ inputs.credentials }}
+      use-test-certificate: ${{ inputs.use-test-certificate }}
       script: |
         // const input_test_cert = core.getInput("use-test-certificate");
         // core.info(`use-test-certificate = ${input_test_cert}`)

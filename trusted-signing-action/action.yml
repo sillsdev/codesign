@@ -76,7 +76,7 @@ runs:
   - id: credentials
     uses: actions/github-script@v7
     env:
-      credentials: ${{ inputs.credentials}}
+      credentials: ${{ inputs.credentials }}
       testing_mode: ${{ inputs.use-test-certificate }}
     with:
       script: |

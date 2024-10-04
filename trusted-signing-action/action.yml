@@ -87,8 +87,8 @@ runs:
         // credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production"
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
-        core.setSecret(credentials.secret)
-        core.setSecret(credentials["account-name"])
+        //core.setSecret(credentials.secret)
+        //core.setSecret(credentials["account-name"])
         console.log(credentials)
         return credentials
 

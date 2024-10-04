@@ -75,11 +75,14 @@ runs:
   steps:
   - id: credentials
     uses: actions/github-script@v7
+    env:
+      credentials: ${{ input.credentials}}
+      testing_mode: ${{ inputs.use-test-certificate }}
     with:
       script: |
-        const test_cert = JSON.parse(${{ inputs.use-test-certificate }})
+        const test_cert = JSON.parse(process.env.testing_mode)
         const profile_name = test_cert ? "sil-codesign-test" : "sil-codesign-production"
-        const credentials = JSON.parse(atob(${{ inputs.credentials }}))
+        const credentials = JSON.parse(atob(process.env.credentials))
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials["client-secret"])

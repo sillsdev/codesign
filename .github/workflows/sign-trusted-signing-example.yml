@@ -15,7 +15,7 @@ jobs:
     
     - uses: sillsdev/codesign/trusted-signing-action@fix/mask-off-derived-secrets
       with:
-        credentials: 'eyJ0ZW5hbnQtaWQiOiIxMjM0LTU2NzgiLCJjbGllbnQtaWQiOiI5MTAxMTEyLTEzMTQxNSIsImNsaWVudC1zZWNyZXQiOiJzaGhoIiwiZW5kcG9pbnQiOiJldXMubXMuY29tIiwiYWNjb3VudC1uYW1lIjoidGVzdGVyIn0K'
+        credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
         use-test-certificate: true
         files-folder: .
         files-folder-filter: exe

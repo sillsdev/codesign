@@ -3,7 +3,7 @@ on:
   push:
     paths:
     - .github/workflows/sign.yml
-    - .github/workflows/sign-example.yml
+    - .github/workflows/sign-trusted-signing-example.yml
     - verify-signature/**
     - trusted-signing-action/**
 
@@ -15,7 +15,7 @@ jobs:
     
     - uses: sillsdev/codesign/trusted-signing-action@v3
       with:
-        credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
+        credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
         files-folder: .
         files-folder-filter: exe
         description: Graphite Description Language compiler

@@ -77,12 +77,12 @@ runs:
     uses: actions/github-script@v7
     with:
       script: |
-        const input_test_cert = core.getInput("use-test-certificate");
-        core.info(`use-test-certificate = ${input_test_cert}`)
-        const test_cert = JSON.parse(input_test_cert);
+        # const input_test_cert = core.getInput("use-test-certificate");
+        # core.info(`use-test-certificate = ${input_test_cert}`)
+        # const test_cert = JSON.parse(input_test_cert);
         let credentials = JSON.parse(core.getInput("credentials", { required: true }));
 
-        credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production";
+        # credentials["profile-name"] = test_cert ? "sil-codesign-test" : "sil-codesign-production";
         core.setSecret(credentials["tenant-id"]);
         core.setSecret(credentials["client-id"]);
         core.setSecret(credentials.secret);

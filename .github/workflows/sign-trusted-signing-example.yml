@@ -16,6 +16,7 @@ jobs:
     - uses: sillsdev/codesign/trusted-signing-action@fix/mask-off-derived-secrets
       with:
         credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
+        use-test-certificate: true
         files-folder: .
         files-folder-filter: exe
         description: Graphite Description Language compiler

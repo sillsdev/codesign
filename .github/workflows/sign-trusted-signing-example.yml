@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - uses: sillsdev/codesign/trusted-signing-action@v3
+    - uses: sillsdev/codesign/trusted-signing-action@fix/mask-off-derived-secrets
       with:
         credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS}}
         files-folder: .

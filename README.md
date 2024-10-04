@@ -2,7 +2,7 @@
 
 This repo provides a facade action over Microsoft's [azure/trusted-signing-action](https://github.com/Azure/trusted-signing-action). This Action takes care of setting required presets, and hides the many account and authentication parameters behind a secret JSON bundle. It also passes through all other parameters for selecting files, and specifying descriptions, and will select the right `certificate-profile-name` input based on a testing flag.
 
-Please see further down for the documentation for the original [v2 documentation](/sillsdev/codesign/README.v2.md)
+Please see further down for the documentation for the original [v2 documentation](/README.v2.md)
 
 
 ## Runner requirements

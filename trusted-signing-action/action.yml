@@ -81,7 +81,7 @@ runs:
       script: |
         const test_cert = core.getBooleanInput("use-test-certificate")
         const profile_name = test_cert ? "sil-codesign-test" : "sil-codesign-production"
-        const credentials = JSON.parse(core.getInput("credentials", { required: true }))
+        const credentials = JSON.parse(atob(core.getInput("credentials", { required: true })))
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials["client-secret"])

@@ -49,6 +49,15 @@ inputs:
                  should be relative to the location of the catalog file. Each file path should be on
                  a separate line. Can be combined with the files and files-folder inputs.
     required: false
+  file-digest:
+    description: The name of the digest algorithm used for hashing the files being signed. The supported
+                 values are SHA256, SHA384, and SHA512.
+    required: false
+    default: 'SHA256'
+  append-signature:
+    description: A boolean value (true/false) that indicates if the signature should be appended. If
+                 no primary signature is present, this signature is made the primary signature instead.
+    required: false
   description:
     description: A description of the signed content.
     required: false
@@ -65,6 +74,12 @@ inputs:
                  may result in performance gains at the risk of potentially hitting your system's maximum
                  command length limit. The minimum value is 0 and the maximum value is 30000. A value of
                  0 means that every file will be signed with an individual call to signtool.
+    required: false
+  clickonce-application-name:
+    description: The application name for any ClickOnce files being signed.
+    required: false
+  clickonce-publisher-name:
+    description: The publisher name for any ClickOnce files being signed.
     required: false
   trace:
     description: A boolean value (true/false) that controls trace logging. The default value is false.
@@ -108,7 +123,6 @@ runs:
       exclude-azure-powershell-credential: true
       exclude-azure-developer-cli-credential: true
       exclude-interactive-browser-credential: true
-      file-digest: SHA256
       timestamp-rfc3161: http://timestamp.acs.microsoft.com
       timestamp-digest: SHA256
       azure-tenant-id: ${{ steps.credentials.outputs.tenant-id }}
@@ -124,8 +138,12 @@ runs:
       files-folder-recurse: ${{ inputs.files-folder-recurse }}
       files-folder-depth: ${{ inputs.files-folder-depth }}
       files-catalog: ${{ inputs.files-catalog }}
+      file-digest: ${{ inputs.file-digest }}
+      append-signature: ${{ inputs.append-signature }}
       description: ${{ inputs.description }}
       description-url: ${{ inputs.description-url }}
       timeout: ${{ inputs.timeout }}
       batch-size: ${{ inputs.batch-size }}
       trace: ${{ inputs.trace }}
+      clickonce-application-name: ${{ inputs.clickonce-application-name }}
+      clickonce-publisher-name: ${{ inputs.clickonce-publisher-name }}

@@ -53,17 +53,21 @@ Tells the signing service to use our Public Trust Test certificate, instead of t
 
 ## `azure/trusted-signing-action` parameters
 ### Supported
-We pass the following inputs through verbatim:
+We pass the following inputs through verbatim, and the have the same defaults as the azure version:
+* `append-signature`
+* `batch-size`
+* `clickonce-application-name`
+* `clickonce-publisher-name`
+* `description-url`
+* `description`
 * `files`
 * `files-folder`
+* `files-folder-depth`
 * `files-folder-filter`
 * `files-folder-recurse`
-* `files-folder-depth`
+* `file-digest`
 * `files-catalog`
-* `description`
-* `description-url`
 * `timeout`
-* `batch-size`
 * `trace` except if the runner is debug mode, then it is always on.
 
 ### Unsupported
@@ -78,7 +82,6 @@ The following parameters from the Azure Action are not accepted as they are supp
 
 The following Azure parameters preset by this Action, and so not accepted as inputs:
 * `certificate-profile-name` derived from `use-test-certificate`
-* `file-digest` set to SHA256.
 * `timestamp-rfc3161` always uses http://timestamp.acs.microsoft.com.
 * `timestamp-digest` set to SHA256.
 * all `exclude-*-credential` inputs as we only support one authentication mechanism.

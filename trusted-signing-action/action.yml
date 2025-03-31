@@ -110,7 +110,7 @@ runs:
         core.setOutput("endpoint", credentials.endpoint)
         core.setOutput("profile-name", profile_name)
 
-  - uses: azure/trusted-signing-action@v0.4.0
+  - uses: azure/trusted-signing-action@v0.5.1
     with: 
       # Parameters we want fixed
       exclude-environment-credential: false

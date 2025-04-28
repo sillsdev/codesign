@@ -2,8 +2,8 @@ name: Demonstrate use of fine grained actions with sign-digest.yml workflow
 on:
   push:
     paths:
-    - .github/workflows/sign-digest.yml
     - .github/workflows/actions-example.yml
+    - .github/workflows/sign-digest.yml
     - apply-signed-digest/**
     - generate-digest/**
     - timestamp/**
@@ -33,7 +33,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2.1
     with:
       job: ${{ needs.build.outputs.job1 }}
   

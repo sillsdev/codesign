@@ -3,6 +3,7 @@ on:
   push:
     paths:
     - .github/workflows/sign.yml
+    - .github/workflows/sign-digest.yml
     - .github/workflows/sign-example.yml
     - apply-signed-digest/**
     - generate-digest/**

@@ -33,7 +33,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/switch-to-new-gh-runner
     with:
       job: ${{ needs.build.outputs.job1 }}
   

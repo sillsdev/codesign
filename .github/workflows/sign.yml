@@ -46,7 +46,7 @@ jobs:
 
   remotesign:
     needs: digest
-    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@v2.1
+    uses: sillsdev/codesign/.github/workflows/sign-digest.yml@fix/switch-to-new-gh-runner
     with:
       job: ${{ needs.digest.outputs.job }}
    

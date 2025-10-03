@@ -24,7 +24,7 @@ jobs:
 
   sign:
     needs: build
-    uses: sillsdev/codesign/.github/workflows/sign.yml@v2.1
+    uses: sillsdev/codesign/.github/workflows/sign.yml@fix/workflow-based-signing-fails-on-windows-2025
     with:
       artifact: grcompiler
       description: Graphite

@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
     
@@ -32,7 +32,7 @@ jobs:
       certificate: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
 
   test:
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: sign
     env:
       signtool: C:/"Program Files (x86)"/"Windows Kits"/10/bin/10.0.17763.0/x86/signtool.exe

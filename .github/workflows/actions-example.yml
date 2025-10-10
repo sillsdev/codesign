@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     outputs:
       job1: ${{ steps.generate.outputs.job }}
     steps:
@@ -39,7 +39,7 @@ jobs:
   
   attach:
     needs: sign
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     # you can apply multiple signature by calling apply-signed-digest many times,
     # provided you reference each invocation's artifact and digest pair separately.

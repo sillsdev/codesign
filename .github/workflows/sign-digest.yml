@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       provider:
+        description: The security token provider.
         default: "LsDevSectigoEV"
         type: string
       job:

@@ -12,8 +12,10 @@ inputs:
   # }
   credentials:
     description: A JSON object containing the credentials to authenticate us to the Trusted Signing Service,
-                 the individual secrets will be masked in the logs.
-    required: true
+                 the individual secrets will be masked in the logs. Defaults to the TRUSTED_SIGNING_CREDENTIALS
+                 organization secret if available.
+    required: false
+    default: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
   use-test-certificate:
     description: Use the Public Trust Test certificate for signing. This will allow signing to complete
                  as normal. However it uses a certificate from an unverifiable root of trust, preventing
@@ -97,7 +99,38 @@ runs:
       script: |
         const test_cert = JSON.parse(process.env.testing_mode)
         const profile_name = test_cert ? "sil-codesign-test" : "sil-codesign-production"
+        
+        // Check if credentials are available
+        if (!process.env.credentials || process.env.credentials === '' || process.env.credentials === 'null') {
+          core.setFailed('❌ Trusted Signing credentials are not available. This usually means:\n\n' +
+            '1. The TRUSTED_SIGNING_CREDENTIALS organization secret is not enabled for this repository\n' +
+            '2. You need to explicitly pass credentials via the "credentials" input parameter\n\n' +
+            'To fix this:\n' +
+            '• Ask a repository admin to enable the TRUSTED_SIGNING_CREDENTIALS organization secret for this repo, OR\n' +
+            '• Pass credentials explicitly: credentials: ${{ secrets.YOUR_CREDENTIALS_SECRET }}\n\n' +
+            'For more information, see the action documentation.')
+          return
+        }
+        
         const credentials = JSON.parse(atob(process.env.credentials))
+        
+        // Validate that all required credential fields are present
+        const requiredFields = ['tenant-id', 'client-id', 'client-secret', 'endpoint', 'account-name']
+        const missingFields = requiredFields.filter(field => !credentials[field])
+        
+        if (missingFields.length > 0) {
+          core.setFailed(`❌ Missing required credential fields: ${missingFields.join(', ')}\n\n` +
+            'The credentials JSON must contain all required fields:\n' +
+            '{\n' +
+            '  "tenant-id": "<Entra Directory ID>",\n' +
+            '  "client-id": "<Entra Application ID>",\n' +
+            '  "client-secret": "<Secret value, not secret ID>",\n' +
+            '  "endpoint": "<endpoint for your country>",\n' +
+            '  "account-name": "<account name>"\n' +
+            '}')
+          return
+        }
+        
         core.setSecret(credentials["tenant-id"])
         core.setSecret(credentials["client-id"])
         core.setSecret(credentials["client-secret"])

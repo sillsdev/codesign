@@ -9,7 +9,20 @@ Please see further down for the documentation for the original [v2 documentation
 
 All the actions in the repo will only run on a windows runner, the GitHub hosted windows runner will work, as will self-hosted runners with Windows 7+ which have Powershell 5.1+, and .NET runtime 6.0+
 
-## Example
+#### Default Credentials
+The action will automatically use the `TRUSTED_SIGNING_CREDENTIALS` organization secret if it's available for your repository. If this secret is not enabled for your repo, you'll get a helpful error message explaining how to fix it.
+
+## Super Simple Example
+
+```yaml
+- name: Sign Windows Installer
+  uses: sillsdev/codesign/trusted-signing-action@v3
+  with:
+    files-folder: dist
+    files-folder-filter: *.exe
+```
+
+## Another Example
 
 An example from an MSIX packaged app:
 ```yaml
@@ -42,13 +55,49 @@ This Action connects to the Azure service via OpenID Connect only, we do not sup
   "account-name": "<account name>"
 }
 ```
-We provide this bundle as an Organizational secret visible to selected repos called `TRUSTED_SIGNING_CREDENTIALS`.
+
+#### Manual Credentials
+You can also explicitly provide credentials by passing them via the `credentials` input:
+```yaml
+- name: Sign with Trusted Signing
+  uses: sillsdev/codesign/trusted-signing-action@v3
+  with:
+    credentials: ${{ secrets.YOUR_CUSTOM_CREDENTIALS }}
+    # ... other parameters
+```
 
 ### Test signing
 ```yaml
 use-test-certificate: true
 ```
 Tells the signing service to use our Public Trust Test certificate, instead of the production certificate. This certificate is guarenteed not validate. Defaults to 'false'.
+
+## Troubleshooting
+
+### Credentials Not Available Error
+If you see an error like "Trusted Signing credentials are not available", this means:
+
+1. **Organization Secret Not Enabled**: The `TRUSTED_SIGNING_CREDENTIALS` organization secret hasn't been enabled for your repository
+2. **No Manual Credentials**: You haven't provided credentials via the `credentials` input
+
+**Solutions:**
+- **Ask a repository admin** to enable the `TRUSTED_SIGNING_CREDENTIALS` organization secret for your repository, OR
+- **Provide credentials manually** by adding your own secret and using:
+  ```yaml
+  credentials: ${{ secrets.YOUR_CREDENTIALS_SECRET }}
+  ```
+
+### Invalid Credentials Error
+If the credentials are present but invalid, check that your JSON contains all required fields:
+```json
+{
+  "tenant-id": "<Entra Directory ID>",
+  "client-id": "<Entra Application ID>", 
+  "client-secret": "<Secret value, not secret ID>",
+  "endpoint": "<endpoint for your country>",
+  "account-name": "<account name>"
+}
+```
 
 
 ## `azure/trusted-signing-action` parameters

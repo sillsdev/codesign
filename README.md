@@ -70,7 +70,7 @@ You can also explicitly provide credentials by passing them via the `credentials
 ```yaml
 use-test-certificate: true
 ```
-Tells the signing service to use our Public Trust Test certificate, instead of the production certificate. This certificate is guarenteed not validate. Defaults to 'false'.
+Tells the signing service to use our Public Trust Test certificate, instead of the production certificate. This certificate is guaranteed not to validate. Defaults to 'false'.
 
 ## Troubleshooting
 
